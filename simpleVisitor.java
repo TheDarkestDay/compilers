@@ -202,6 +202,12 @@ public interface simpleVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFactor(simpleParser.FactorContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link simpleParser#argsList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArgsList(simpleParser.ArgsListContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link simpleParser#functionCall}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

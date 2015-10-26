@@ -149,8 +149,12 @@ factor
     | NOT factor
     ;
     
+argsList
+    : expression (COM expression)*
+    ;
+    
 functionCall
-    : identifier RPAREN (args)? LPAREN
+    : identifier RPAREN (argsList)? LPAREN
     ;
     
     

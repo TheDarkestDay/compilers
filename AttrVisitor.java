@@ -10,8 +10,9 @@ public class AttrVisitor extends simpleBaseVisitor<Integer> {
     @Override
     public Integer visitAtomicDefinition(simpleParser.AtomicDefinitionContext ctx) {
         String id = ctx.identifier().getText();
+        Integer line = ctx.getStart().getLine();
         if (map.get(id) == "Function") {
-            System.out.println("Error");
+            System.out.println("ERR ( Line "+line+") "+id+" previously defined as function");
         } else {
             map.put(id,"Variable");
         }
@@ -21,11 +22,54 @@ public class AttrVisitor extends simpleBaseVisitor<Integer> {
     @Override
     public Integer visitFunctionDefinition(simpleParser.FunctionDefinitionContext ctx) {
         String id = ctx.identifier().getText();
+        Integer line = ctx.getStart().getLine();
         if (map.get(id) == "Variable") {
-            System.out.println("Error");
+            System.out.println("ERR ( Line "+line+") "+id+" previously defined as variable");
         } else {
             map.put(id,"Function");
         }
+        return visitChildren(ctx);
+    }
+    
+    @Override
+    public Integer visitArrayDefinition(simpleParser.ArrayDefinitionContext ctx) {
+        String id = ctx.identifier().getText();
+        Integer line = ctx.identifier().getStart().getLine();
+        if (map.get(id) == "Function") {
+            System.out.println("ERR ( Line "+line+") "+id+" previously defined as function");
+        } else {
+            map.put(id,"Variable");
+        }
+        return visitChildren(ctx);
+    }
+    
+    @Override
+    public Integer visitDictDefinition(simpleParser.DictDefinitionContext ctx) {
+        String id = ctx.identifier().getText();
+        Integer line = ctx.getStart().getLine();
+        if (map.get(id) == "Function") {
+            System.out.println("ERR ( Line "+line+") "+id+" previously defined as function");
+        } else {
+            map.put(id,"Variable");
+        }
+        return visitChildren(ctx);
+    }
+    
+    @Override
+    public Integer visitFunctionCall(simpleParser.FunctionCallContext ctx) {
+        String id = ctx.identifier().getText();
+        Integer line = ctx.getStart().getLine();
+        if (map.get(id) == "Variable") 
+            System.out.println("ERR ( Line "+line+") "+id+" previously defined as variable");
+        return visitChildren(ctx);
+    }
+        
+    @Override
+    public Integer visitVariable(simpleParser.VariableContext ctx) {
+        String id_first = ctx.identifier(0).getText();
+        Integer line = ctx.getStart().getLine();
+        if (map.get(id_first) == "Function") 
+            System.out.println("ERR ( Line "+line+") "+id_first+" previously defined as function");
         return visitChildren(ctx);
     }
 };
