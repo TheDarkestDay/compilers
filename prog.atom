@@ -1,8 +1,26 @@
 head: {
+    subs: {
+        number x() {
+            head: {
+                
+            }
+            body: {
+                
+            }
+        } 
+    }
     vars: {
-        x: number;
+        x:number;
+        a:string;
+    }
+    const: {
+        y = 43;
     }
 }
 body: {
-    print x;
+    get x;
+    if x>y {
+        get a;
+        print a;
+    };
 }

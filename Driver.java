@@ -11,16 +11,15 @@ import java.util.List;
 
 public class Driver {
     public static void main(String args[]) throws Exception {
-        String inputFile = null;
-        if (args.length>0) inputFile = args[0];
-        InputStream is = System.in;
-        if (inputFile!=null) is = new FileInputStream(inputFile);
+        String inputFile = args[0];
+        
+        InputStream is = new FileInputStream(inputFile);
         ANTLRInputStream input = new ANTLRInputStream(is);
         simpleLexer lexer = new simpleLexer(input);
+        
         CommonTokenStream tokens = new CommonTokenStream(lexer);       
         simpleParser parser = new simpleParser(tokens);
         ParseTree tree = parser.program();
-        
         JFrame frame = new JFrame("Tree view");
         JPanel panel = new JPanel();
         TreeViewer viewr = new TreeViewer(Arrays.asList(
@@ -31,5 +30,14 @@ public class Driver {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400,400);
         frame.setVisible(true);
+                
+        input.reset();
+        simpleLexer subLexer = new simpleLexer(input);
+        for(Token tok = subLexer.nextToken(); tok.getType() != Token.EOF; tok = subLexer.nextToken()) {
+            System.out.print(tok.getText()+" "+tok.getLine()+":"+tok.getCharPositionInLine()+"\n");
+        }
+        
+        AttrVisitor attr = new AttrVisitor();
+        attr.visit(tree);
     }
 }
