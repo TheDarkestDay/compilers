@@ -19,7 +19,6 @@ head: {
 }
 body: {
     get x;
-    ###;
     a();
     if x>y {
         get a;
