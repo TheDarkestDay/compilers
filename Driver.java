@@ -7,23 +7,12 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
 
 
 public class Driver {
     public static void main(String args[]) throws Exception {
-        String[] legalTokensArray = {
-            ":=", "{", "}", "(", 
-		")", "[", "]", ":", ";", ",", ".", "=", "!=", "!", 
-		"<", "<=", ">", ">=", "+", "-", "*", "/","BODY", "HEAD", "CONST", "VARS", "SUBS", "COLLECTION", "DICTIONARY", 
-		"OF", "IF", "ELSE", "NUMBER", "REAL", "STRING", "OR", "AND", "PRINT", 
-		"GET", "WHILE"
-        }; 
-        Set<String> legalTokens = new HashSet<String>(Arrays.asList(legalTokensArray));
         String inputFile = args[0];
-        
-        
+               
         InputStream is = new FileInputStream(inputFile);
         ANTLRInputStream input = new ANTLRInputStream(is);
         simpleLexer lexer = new simpleLexer(input);
@@ -46,13 +35,7 @@ public class Driver {
         simpleLexer subLexer = new simpleLexer(input);
         String currentToken = "";
         for(Token tok = subLexer.nextToken(); tok.getType() != Token.EOF; tok = subLexer.nextToken()) {
-            currentToken = tok.getText();
-            currentToken = currentToken.toUpperCase();
-            if (!legalTokens.contains(currentToken) && tok.getType() != 41 )
-                System.out.print("ERR: Illegal token on "+"");
-            else {
-                System.out.print(tok.getText()+" "+tok.getLine()+":"+tok.getCharPositionInLine()+" "+tok.getType()+"\n");
-            }
+            System.out.print(tok.getText()+" "+tok.getLine()+":"+tok.getCharPositionInLine()+" "+tok.getType()+"\n");
         }
         
         AttrVisitor attr = new AttrVisitor();

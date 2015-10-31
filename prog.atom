@@ -20,6 +20,7 @@ head: {
 body: {
     get x;
     a();
+    begin;
     if x>y {
         get a;
         print a;
