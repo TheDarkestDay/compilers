@@ -399,6 +399,18 @@ public class simpleBaseListener implements simpleListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterArgsList(simpleParser.ArgsListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArgsList(simpleParser.ArgsListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFunctionCall(simpleParser.FunctionCallContext ctx) { }
 	/**
 	 * {@inheritDoc}

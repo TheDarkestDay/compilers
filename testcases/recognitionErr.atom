@@ -1,0 +1,13 @@
+head: {
+    const: {
+        x = 30;
+        str = 'string_literal';
+    }
+    vars: {
+        y:string;
+    }
+}
+body: {
+    print str;
+    ###;
+}

@@ -327,6 +327,16 @@ public interface simpleListener extends ParseTreeListener {
 	 */
 	void exitFactor(simpleParser.FactorContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link simpleParser#argsList}.
+	 * @param ctx the parse tree
+	 */
+	void enterArgsList(simpleParser.ArgsListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link simpleParser#argsList}.
+	 * @param ctx the parse tree
+	 */
+	void exitArgsList(simpleParser.ArgsListContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link simpleParser#functionCall}.
 	 * @param ctx the parse tree
 	 */

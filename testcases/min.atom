@@ -1,0 +1,7 @@
+head: {
+
+}
+body: {
+    print 'Hello';
+    ret 0;
+}

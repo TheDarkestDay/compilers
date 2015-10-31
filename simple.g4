@@ -93,7 +93,7 @@ code
     ;
     
 statementSequence
-    : RCURL (statement SEMI)* LCURL
+    : RCURL (statement SEMI)* RET expression SEMI LCURL
     ;
     
 statement
@@ -118,11 +118,11 @@ input
     ;
     
 output
-    : PRINT variable
+    : PRINT (variable | string)
     ;
     
 assign
-    : variable ASSIGN expression
+    : variable ASSIGN (expression | string)
     ;
     
 expression
@@ -255,6 +255,10 @@ GET
     
 WHILE
     : W H I L E
+    ;
+    
+RET
+    : R E T
     ;
     
 ASSIGN
