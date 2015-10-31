@@ -1,0 +1,36 @@
+head:{
+    const: {
+        a = 4;
+        b = 'word';
+    }
+    vars: {
+        x:number;
+        q:string;
+        z:real;
+        collection args of 5:number;
+        dictionary book of string,string;
+    }
+    subs: {
+        number func(number i) {
+            head: {          
+            }
+            body: {
+                ret 0+i;
+            }
+        }
+    }
+}
+body: {
+    get x;
+    print args[1];
+    book.author := 'Tolstoy';
+    while x<100 {
+        x := x-10;
+        if x = a {
+            print x;
+        } else {
+            print a;
+        };
+    };
+    ret func(1)*15-1;
+}

@@ -89,11 +89,11 @@ variable
     ;
 
 code
-    : BODY COL statementSequence
+    : BODY COL RCURL statementSequence RET expression SEMI LCURL
     ;
     
 statementSequence
-    : RCURL (statement SEMI)* RET expression SEMI LCURL
+    : (statement SEMI)*
     ;
     
 statement
@@ -106,11 +106,11 @@ statement
     ;
     
 loop
-    : WHILE expression statementSequence
+    : WHILE expression RCURL statementSequence LCURL
     ;
     
 condition
-    : IF expression statementSequence (ELSE statementSequence)?
+    : IF expression RCURL statementSequence LCURL (ELSE RCURL statementSequence LCURL)?
     ;
     
 input

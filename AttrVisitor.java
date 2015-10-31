@@ -7,39 +7,46 @@ public class AttrVisitor extends simpleBaseVisitor<Integer> {
     
     Map<String,String> map = new HashMap<String,String>();
     
+    public void printMap() {
+        for (Map.Entry<String,String> entry : map.entrySet()) {
+            System.out.println(entry.getKey()+" is a "+entry.getValue());
+        };
+    }
+    
     @Override
     public Integer visitAtomicDefinition(simpleParser.AtomicDefinitionContext ctx) {
         String id = ctx.identifier().getText();
+        String type = ctx.type().getText();
         Integer line = ctx.getStart().getLine();
-        if (map.get(id) == "Function") {
-            System.out.println("ERR ( Line "+line+") "+id+" previously defined as function");
-        } else {
-            map.put(id,"Variable");
-        }
+        map.put(id,type);
         return visitChildren(ctx);
     }
     
     @Override
     public Integer visitFunctionDefinition(simpleParser.FunctionDefinitionContext ctx) {
         String id = ctx.identifier().getText();
+        String type = ctx.type().getText();
         Integer line = ctx.getStart().getLine();
-        if (map.get(id) == "Variable") {
+      /*  if (map.get(id) == "Variable") {
             System.out.println("ERR ( Line "+line+") "+id+" previously defined as variable");
         } else {
             map.put(id,"Function");
-        }
+        } */
+        map.put(id,"function that returns "+type);
         return visitChildren(ctx);
     }
     
     @Override
     public Integer visitArrayDefinition(simpleParser.ArrayDefinitionContext ctx) {
         String id = ctx.identifier().getText();
+        String type = ctx.type().getText();
         Integer line = ctx.identifier().getStart().getLine();
-        if (map.get(id) == "Function") {
+   /*     if (map.get(id) == "Function") {
             System.out.println("ERR ( Line "+line+") "+id+" previously defined as function");
         } else {
             map.put(id,"Variable");
-        }
+        } */
+        map.put(id,"array of "+type);
         return visitChildren(ctx);
     }
     
@@ -47,11 +54,14 @@ public class AttrVisitor extends simpleBaseVisitor<Integer> {
     public Integer visitDictDefinition(simpleParser.DictDefinitionContext ctx) {
         String id = ctx.identifier().getText();
         Integer line = ctx.getStart().getLine();
-        if (map.get(id) == "Function") {
+        String typeFirst = ctx.type(0).getText();
+        String typeSecond = ctx.type(1).getText();
+    /*    if (map.get(id) == "Function") {
             System.out.println("ERR ( Line "+line+") "+id+" previously defined as function");
         } else {
             map.put(id,"Variable");
-        }
+        } */
+        map.put(id,"dictionary of "+typeFirst+", "+typeSecond);
         return visitChildren(ctx);
     }
     

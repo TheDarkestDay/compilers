@@ -7,6 +7,9 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 
 public class Driver {
@@ -16,6 +19,7 @@ public class Driver {
         InputStream is = new FileInputStream(inputFile);
         ANTLRInputStream input = new ANTLRInputStream(is);
         simpleLexer lexer = new simpleLexer(input);
+        
         
         CommonTokenStream tokens = new CommonTokenStream(lexer);       
         simpleParser parser = new simpleParser(tokens);
@@ -35,10 +39,12 @@ public class Driver {
         simpleLexer subLexer = new simpleLexer(input);
         String currentToken = "";
         for(Token tok = subLexer.nextToken(); tok.getType() != Token.EOF; tok = subLexer.nextToken()) {
-            System.out.print(tok.getText()+" "+tok.getLine()+":"+tok.getCharPositionInLine()+" "+tok.getType()+"\n");
+            System.out.print(tok.getText()+" "+tok.getLine()+":"+tok.getCharPositionInLine()+" "+subLexer.getVocabulary().getSymbolicName(tok.getType())+"\n");
         }
         
         AttrVisitor attr = new AttrVisitor();
         attr.visit(tree);
+        
+        attr.printMap();
     }
 }
