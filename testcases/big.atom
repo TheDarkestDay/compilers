@@ -12,9 +12,18 @@ head:{
     }
     subs: {
         number func(number i) {
-            head: {          
+            head: {
+                vars: {
+                    q: number;
+                    x: string;
+                    z: real;
+                    dictionary args of number,number;
+                    test: string;
+                }
             }
             body: {
+                get test;
+                print book;
                 ret 0+i;
             }
         }
@@ -24,6 +33,7 @@ body: {
     get x;
     print args[1];
     book.author := 'Tolstoy';
+    print test;
     while x<100 {
         x := x-10;
         if x = a {

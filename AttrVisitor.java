@@ -27,11 +27,6 @@ public class AttrVisitor extends simpleBaseVisitor<Integer> {
         String id = ctx.identifier().getText();
         String type = ctx.type().getText();
         Integer line = ctx.getStart().getLine();
-      /*  if (map.get(id) == "Variable") {
-            System.out.println("ERR ( Line "+line+") "+id+" previously defined as variable");
-        } else {
-            map.put(id,"Function");
-        } */
         map.put(id,"function that returns "+type);
         return visitChildren(ctx);
     }
@@ -41,11 +36,6 @@ public class AttrVisitor extends simpleBaseVisitor<Integer> {
         String id = ctx.identifier().getText();
         String type = ctx.type().getText();
         Integer line = ctx.identifier().getStart().getLine();
-   /*     if (map.get(id) == "Function") {
-            System.out.println("ERR ( Line "+line+") "+id+" previously defined as function");
-        } else {
-            map.put(id,"Variable");
-        } */
         map.put(id,"array of "+type);
         return visitChildren(ctx);
     }
@@ -56,11 +46,6 @@ public class AttrVisitor extends simpleBaseVisitor<Integer> {
         Integer line = ctx.getStart().getLine();
         String typeFirst = ctx.type(0).getText();
         String typeSecond = ctx.type(1).getText();
-    /*    if (map.get(id) == "Function") {
-            System.out.println("ERR ( Line "+line+") "+id+" previously defined as function");
-        } else {
-            map.put(id,"Variable");
-        } */
         map.put(id,"dictionary of "+typeFirst+", "+typeSecond);
         return visitChildren(ctx);
     }

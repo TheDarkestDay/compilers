@@ -45,6 +45,9 @@ public class Driver {
         AttrVisitor attr = new AttrVisitor();
         attr.visit(tree);
         
-        attr.printMap();
+        ParseTreeWalker walker = new ParseTreeWalker();
+        ScopeListener listener = new ScopeListener();
+        walker.walk(listener,tree);
+        listener.printScope();
     }
 }
