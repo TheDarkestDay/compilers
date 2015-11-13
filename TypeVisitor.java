@@ -2,9 +2,17 @@
 
 public class TypeVisitor extends simpleBaseVisitor {
     
+    Scope scope;
+    String currentScopeName;
+    
+    public TypeVisitor(Scope scp) {
+        scope = scp;
+    }
+    
     @Override
     public Integer visitAssign(simpleParser.AssignContext ctx) {
         String leftType = visit(ctx.variable());
+        System.out.println(leftType);
     }
     
     @Override
@@ -13,7 +21,7 @@ public class TypeVisitor extends simpleBaseVisitor {
         return scope.getTypeOf(id);
     }
     
-    @Override
+  /*  @Override
     public Integer visitFunctionDefinition(simpleParser.FunctionDefinitionContext ctx) {
         String typeToReturn = ctx.type().getText();
         String actualyReturned = visit(ctx.code());
@@ -25,5 +33,5 @@ public class TypeVisitor extends simpleBaseVisitor {
     @Override
     public Integer visitSimpleExpression(simpleParser.SimpleExpressionContext ctx) {
         
-    }
+    } */
 }

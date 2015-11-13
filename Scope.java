@@ -17,7 +17,15 @@ public class Scope {
     }
     
     public String getTypeOf(String id) {
-        return table.get(id);
+        if (table.containsKey(id)) {
+            return table.get(id);
+        } else {
+            if (parent != null) {
+                return this.getParent().getTypeOf(id);
+            } else {
+                return "E";
+            }
+        }
     }
     
     public boolean contains(String id) {
@@ -56,4 +64,19 @@ public class Scope {
     public Scope getParent() {
         return parent;
     }
+    
+    public String getName() {
+        return name;
+    }
+    
+ /*   public String find(String scopeName, String id) {
+        for (Scope scp : children) {
+            if (scp.getName() == scopeName) {
+                return scp.getTypeOf(id);
+            } else {
+                return scp.find(scopeName,id);
+            }
+        }
+        return "E";
+    } */
 }

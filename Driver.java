@@ -42,12 +42,13 @@ public class Driver {
             System.out.print(tok.getText()+" "+tok.getLine()+":"+tok.getCharPositionInLine()+" "+subLexer.getVocabulary().getSymbolicName(tok.getType())+"\n");
         }
         
-        AttrVisitor attr = new AttrVisitor();
-        attr.visit(tree);
         
         ParseTreeWalker walker = new ParseTreeWalker();
         ScopeListener listener = new ScopeListener();
         walker.walk(listener,tree);
         listener.printScope();
+        
+   /*     TypeVisitor attr = new TypeVisitor(listener.getScope());
+        attr.visit(tree); */
     }
 }

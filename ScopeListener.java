@@ -3,13 +3,17 @@ import java.util.ArrayList;
 public class ScopeListener extends simpleBaseListener {
     
     Scope activeScope;
-    String assigmentLeftType;
-    boolean assigmentTypeCheck;
+    String assignLeftType;
+    boolean assignCheck;
     
     public ScopeListener() {
         activeScope = new Scope("Global", null);
-        assigmentTypeCheck = false;
-        assigmentLeftType = "";
+        assignCheck = false;
+        assignLeftType = "";
+    }
+    
+    public Scope getScope() {
+        return activeScope;
     }
     
     @Override
@@ -52,13 +56,11 @@ public class ScopeListener extends simpleBaseListener {
     public void enterFunctionDefinition(simpleParser.FunctionDefinitionContext ctx) {
         String scopeID = ctx.identifier().getText();
         activeScope = activeScope.appendChild(new Scope(scopeID, activeScope));
-        System.out.println("Entered declaration of function "+ctx.identifier().getText());
     }
     
     @Override
     public void exitFunctionDefinition(simpleParser.FunctionDefinitionContext ctx) {
         activeScope = activeScope.getParent();
-        System.out.println("Leaving the declaration of function "+ctx.identifier().getText());
     }
     
     @Override
@@ -68,6 +70,42 @@ public class ScopeListener extends simpleBaseListener {
         if (!activeScope.contains(id)) {
             System.out.println("ERR( Line "+line+" ): "+id+" does not declared in this scope");
         }
+        if (assignCheck) {
+            String type = activeScope.getTypeOf(id);
+            if (assignLeftType == "") {
+                assignLeftType = type
+            }
+            if (assignLeftType != type) {
+                System.out.println("ERR( Line "+line+" ): Incompatible types");
+            }
+        }
+    }
+    
+    @Override
+    public void enterAssign(simpleParser.AssignContext ctx) {
+        assignCheck = true;
+    }
+    
+    @Override
+    public void exitAssign(simpleParser.AssignContext ctx) {
+        assignCheck = false;
+        assignLeftType = "";
+    }
+    
+    @Override
+    public void enterFunctionCall(simpleParser.FunctionCallContext ctx) {
+        if (assignCheck) {
+            String id = ctx.identifier().getText();
+            String type = activeScope.getTypeOf(id);
+            if (type != assignCheck) {
+                System.out.println("ERR( Line "+line+" ): Incompatible types");
+            }
+        }
+    }
+    
+    @Override
+    public void enterUnsignedNumber(simpleParser.UnsignedNumberContext ctx) {
+        
     }
         
     public void printScope() {
