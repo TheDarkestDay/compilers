@@ -207,6 +207,16 @@ public interface simpleListener extends ParseTreeListener {
 	 */
 	void exitCode(simpleParser.CodeContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link simpleParser#returnStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterReturnStatement(simpleParser.ReturnStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link simpleParser#returnStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitReturnStatement(simpleParser.ReturnStatementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link simpleParser#statementSequence}.
 	 * @param ctx the parse tree
 	 */

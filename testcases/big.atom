@@ -24,7 +24,8 @@ head:{
             body: {
                 get test;
                 print book;
-                ret 0+i;
+                x := 'string';
+                ret x;
             }
         }
     }

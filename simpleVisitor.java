@@ -130,6 +130,12 @@ public interface simpleVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCode(simpleParser.CodeContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link simpleParser#returnStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReturnStatement(simpleParser.ReturnStatementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link simpleParser#statementSequence}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

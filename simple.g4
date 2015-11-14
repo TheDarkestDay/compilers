@@ -89,7 +89,11 @@ variable
     ;
 
 code
-    : BODY COL RCURL statementSequence RET expression SEMI LCURL
+    : BODY COL RCURL statementSequence returnStatement LCURL
+    ;
+    
+returnStatement
+    : RET expression SEMI
     ;
     
 statementSequence

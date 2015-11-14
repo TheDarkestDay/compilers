@@ -5,11 +5,15 @@ public class ScopeListener extends simpleBaseListener {
     Scope activeScope;
     String assignLeftType;
     boolean assignCheck;
+    boolean returnCheck;
+    String expectedType;
     
     public ScopeListener() {
         activeScope = new Scope("Global", null);
         assignCheck = false;
+        returnCheck = false;
         assignLeftType = "";
+        expectedType = "";
     }
     
     public Scope getScope() {
@@ -72,14 +76,20 @@ public class ScopeListener extends simpleBaseListener {
         if (!activeScope.contains(id)) {
             System.out.println("ERR( Line "+line+" ): "+id+" does not declared in this scope");
         }
+        String type = activeScope.getTypeOf(id);
         if (assignCheck) {
-            String type = activeScope.getTypeOf(id);
             if (assignLeftType.equals("")) {
                 assignLeftType = type;
                 System.out.println("Expected type is: "+assignLeftType);
             } else {
                 if (!assignLeftType.equals(type)) {
                     System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" "+assignLeftType+" "+type);
+                }
+            }
+        } else {
+            if (returnCheck) {
+                if (!expectedType.equals(type)) {
+                    System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" "+expectedType+" "+type);
                 }
             }
         }
@@ -99,12 +109,18 @@ public class ScopeListener extends simpleBaseListener {
     
     @Override
     public void enterFunctionCall(simpleParser.FunctionCallContext ctx) {
+        String id = ctx.identifier().getText();
+        String type = activeScope.getTypeOf(id);
+        Integer line = ctx.getStart().getLine();
         if (assignCheck) {
-            String id = ctx.identifier().getText();
-            String type = activeScope.getTypeOf(id);
-            Integer line = ctx.getStart().getLine();
             if (!type.equals(assignLeftType)) {
                 System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" "+assignLeftType+" "+type);
+            }
+        } else {
+            if (returnCheck) {
+                if (!expectedType.equals(type)) {
+                    System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" "+expectedType+" "+type);
+                }
             }
         }
     }
@@ -116,8 +132,27 @@ public class ScopeListener extends simpleBaseListener {
             if (assignLeftType.equals("String")) {
                 System.out.println("ERR( Line "+line+" ): Incompatible types ");
             }
+        } else {
+            if (returnCheck && expectedType.equals("string")) {
+                System.out.println("ERR( Line "+line+" ): Incompatible types  "+expectedType+" number");
+            }
         }
     }
+    
+    @Override
+    public void enterReturnStatement(simpleParser.ReturnStatementContext ctx) {
+        if (activeScope.getParent() != null) {
+            returnCheck = true;
+            String currFuncName = activeScope.getName();
+            expectedType = activeScope.getParent().getTypeOf(currFuncName);
+        }
+    }
+    
+    @Override
+    public void exitReturnStatement(simpleParser.ReturnStatementContext ctx) {
+        returnCheck = false;
+    }
+    
         
     public void printScope() {
         activeScope.print();
