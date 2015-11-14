@@ -11,7 +11,7 @@ head:{
         dictionary book of string,string;
     }
     subs: {
-        number func(number i) {
+        number func(number i, string t) {
             head: {
                 vars: {
                     q: number;
@@ -35,8 +35,8 @@ body: {
     print args[1];
     book.author := 'Tolstoy';
     print test;
-    z := 'Word';
-    q := func(4)*z;
+    q := 'Word';
+    func(q,q);
     while x<100 {
         x := x-10;
         if x = a {
@@ -45,5 +45,5 @@ body: {
             print a;
         };
     };
-    ret func(1)*15-1;
+    ret 1;
 }

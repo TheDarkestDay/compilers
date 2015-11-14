@@ -1,10 +1,12 @@
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.AbstractMap;
 
 public class Scope {
     
     Map<String,String> table;
+    ArrayList<Map.Entry<String,String>> arguments;
     ArrayList<Scope> children;
     String name;
     Scope parent;
@@ -14,6 +16,15 @@ public class Scope {
         this.name = name;
         this.parent = parent;
         children = new ArrayList<Scope>();
+        arguments = new ArrayList<Map.Entry<String,String>>();
+    }
+    
+    public void addArgument(String id, String type) {
+        arguments.add(new AbstractMap.SimpleEntry<String,String>(id,type));
+    }
+    
+    public String getArgumentType(Integer i) {
+        return arguments.get(i).getValue();
     }
     
     public String getTypeOf(String id) {
@@ -50,6 +61,10 @@ public class Scope {
         for (Map.Entry<String,String> entry : table.entrySet()) {
             System.out.println(entry.getKey()+" is a "+entry.getValue());
         };
+        System.out.println("ARGS:");
+        for (Integer i=0;i<arguments.size();i++) {
+            System.out.println(arguments.get(i).getValue()+" "+arguments.get(i).getKey());
+        }
         System.out.println("====================================================");
         for (Scope scp : children) {
             scp.print();
@@ -69,14 +84,14 @@ public class Scope {
         return name;
     }
     
- /*   public String find(String scopeName, String id) {
+    public Scope findScopeOf(String funcName) {
         for (Scope scp : children) {
-            if (scp.getName() == scopeName) {
-                return scp.getTypeOf(id);
+            if (scp.getName().equals(funcName)) {
+                return scp;
             } else {
-                return scp.find(scopeName,id);
+                return scp.findScopeOf(funcName);
             }
         }
-        return "E";
-    } */
+        return new Scope(null,null);
+    } 
 }
