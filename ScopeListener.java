@@ -55,6 +55,8 @@ public class ScopeListener extends simpleBaseListener {
     @Override 
     public void enterFunctionDefinition(simpleParser.FunctionDefinitionContext ctx) {
         String scopeID = ctx.identifier().getText();
+        String returnType = ctx.type().getText();
+        activeScope.setTypeOf(scopeID, returnType);
         activeScope = activeScope.appendChild(new Scope(scopeID, activeScope));
     }
     
@@ -72,11 +74,13 @@ public class ScopeListener extends simpleBaseListener {
         }
         if (assignCheck) {
             String type = activeScope.getTypeOf(id);
-            if (assignLeftType == "") {
-                assignLeftType = type
-            }
-            if (assignLeftType != type) {
-                System.out.println("ERR( Line "+line+" ): Incompatible types");
+            if (assignLeftType.equals("")) {
+                assignLeftType = type;
+                System.out.println("Expected type is: "+assignLeftType);
+            } else {
+                if (!assignLeftType.equals(type)) {
+                    System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" "+assignLeftType+" "+type);
+                }
             }
         }
     }
@@ -84,6 +88,7 @@ public class ScopeListener extends simpleBaseListener {
     @Override
     public void enterAssign(simpleParser.AssignContext ctx) {
         assignCheck = true;
+        System.out.println("Entered assign");
     }
     
     @Override
@@ -97,15 +102,21 @@ public class ScopeListener extends simpleBaseListener {
         if (assignCheck) {
             String id = ctx.identifier().getText();
             String type = activeScope.getTypeOf(id);
-            if (type != assignCheck) {
-                System.out.println("ERR( Line "+line+" ): Incompatible types");
+            Integer line = ctx.getStart().getLine();
+            if (!type.equals(assignLeftType)) {
+                System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" "+assignLeftType+" "+type);
             }
         }
     }
     
     @Override
     public void enterUnsignedNumber(simpleParser.UnsignedNumberContext ctx) {
-        
+        Integer line = ctx.getStart().getLine();
+        if (assignCheck) {
+            if (assignLeftType.equals("String")) {
+                System.out.println("ERR( Line "+line+" ): Incompatible types ");
+            }
+        }
     }
         
     public void printScope() {

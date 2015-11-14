@@ -6,7 +6,7 @@ head:{
     vars: {
         x:number;
         q:string;
-        z:real;
+        z:string;
         collection args of 5:number;
         dictionary book of string,string;
     }
@@ -34,6 +34,8 @@ body: {
     print args[1];
     book.author := 'Tolstoy';
     print test;
+    z := 'Word';
+    q := func(4)*z;
     while x<100 {
         x := x-10;
         if x = a {
