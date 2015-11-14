@@ -44,6 +44,7 @@ public class ScopeListener extends simpleBaseListener {
         String id = ctx.identifier().getText();
         String type = ctx.type().getText();
         activeScope.addArgument(id,type);
+        System.out.println("Argument added");
     }
     
     @Override
@@ -85,22 +86,21 @@ public class ScopeListener extends simpleBaseListener {
         if (assignCheck) {
             if (assignLeftType.equals("")) {
                 assignLeftType = type;
-                System.out.println("Expected type is: "+assignLeftType);
             } else {
                 if (!assignLeftType.equals(type)) {
-                    System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" "+assignLeftType+" "+type);
+                    System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" expected "+assignLeftType+" but got "+type);
                 }
             }
         } else {
             if (returnCheck) {
                 if (!expectedType.equals(type)) {
-                    System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" "+expectedType+" "+type);
+                    System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" expected "+expectedType+" but got "+type);
                 }
             }
         }
         if (argsCheck) {
             if(!expectedType.equals(type)) {
-                System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" "+expectedType+" "+type);
+                System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" expected "+expectedType+" but got "+type);
             }
         } 
     }
@@ -108,7 +108,6 @@ public class ScopeListener extends simpleBaseListener {
     @Override
     public void enterAssign(simpleParser.AssignContext ctx) {
         assignCheck = true;
-        System.out.println("Entered assign");
     }
     
     @Override
@@ -123,20 +122,21 @@ public class ScopeListener extends simpleBaseListener {
         thisFunctionScope = activeScope.findScopeOf(id);
         String type = activeScope.getTypeOf(id);
         Integer line = ctx.getStart().getLine();
+        argsCounter = 0;
         if (assignCheck) {
             if (!type.equals(assignLeftType)) {
-                System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" "+assignLeftType+" "+type);
+                System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" expected  "+assignLeftType+" but got "+type);
             }
         } else {
             if (returnCheck) {
                 if (!expectedType.equals(type)) {
-                    System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" "+expectedType+" "+type);
+                    System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" expected "+expectedType+" but got "+type);
                 }
             }
         }
         if (argsCheck) {
             if (!type.equals(expectedType)) {
-                System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" "+expectedType+" "+type);
+                System.out.println("ERR( Line "+line+" ): Incompatible types "+id+" expected "+expectedType+" but got "+type);
             }
         } 
     }
@@ -150,12 +150,12 @@ public class ScopeListener extends simpleBaseListener {
             }
         } else {
             if (returnCheck && expectedType.equals("string")) {
-                System.out.println("ERR( Line "+line+" ): Incompatible types  "+expectedType+" number");
+                System.out.println("ERR( Line "+line+" ): Incompatible types  "+expectedType+" expected but got number");
             } 
         }
         if (argsCheck) {
             if (expectedType.equals("string")) {
-                System.out.println("ERR( Line "+line+" ): Incompatible types  "+expectedType+" number");
+                System.out.println("ERR( Line "+line+" ): Incompatible types  "+expectedType+" expected but got number");
             }
         } 
     }
@@ -177,14 +177,18 @@ public class ScopeListener extends simpleBaseListener {
     @Override
     public void enterArgsList(simpleParser.ArgsListContext ctx) {
         argsCheck = true;
+    }
+    
+    @Override
+    public void enterArgument(simpleParser.ArgumentContext ctx) {
         expectedType = thisFunctionScope.getArgumentType(argsCounter);
         argsCounter++;
+        System.out.println("Entered argument");
     }
     
     @Override
     public void exitArgsList(simpleParser.ArgsListContext ctx) {
         argsCheck = false;
-        argsCounter = 0;
     }
         
     public void printScope() {

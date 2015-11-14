@@ -356,4 +356,14 @@ public interface simpleListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunctionCall(simpleParser.FunctionCallContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link simpleParser#argument}.
+	 * @param ctx the parse tree
+	 */
+	void enterArgument(simpleParser.ArgumentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link simpleParser#argument}.
+	 * @param ctx the parse tree
+	 */
+	void exitArgument(simpleParser.ArgumentContext ctx);
 }

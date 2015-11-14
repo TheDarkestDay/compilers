@@ -154,11 +154,15 @@ factor
     ;
     
 argsList
-    : expression (COM expression)*
+    : argument (COM argument)*
     ;
     
 functionCall
     : identifier RPAREN (argsList)? LPAREN
+    ;
+    
+argument
+    : expression
     ;
     
     
