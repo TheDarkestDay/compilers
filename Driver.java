@@ -48,7 +48,6 @@ public class Driver {
         walker.walk(listener,tree);
         listener.printScope();
         
-   /*     TypeVisitor attr = new TypeVisitor(listener.getScope());
-        attr.visit(tree); */
+        System.out.println(listener.getJava());
     }
 }
