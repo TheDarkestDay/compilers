@@ -6,6 +6,20 @@ head: {
         q: string;
         collection arr of 5: number;
     }
+    subs: {
+        number greet(string q, real y) {
+            head: {
+                vars: {
+                    z: number;
+                    v: string;
+                    u: real;
+                }
+            }
+            body: {
+                ret 0;
+            }
+        }
+    }
 }
 body: {
     print q;

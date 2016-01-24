@@ -82,9 +82,18 @@ public class Translator extends simpleBaseListener {
     }
     
     @Override
+    public void enterReturnStatement(simpleParser.ReturnStatementContext ctx) {
+        if (activeScope.getParent() != null) {
+            result += "return ";
+        }
+    }
+    
+    @Override
     public void exitReturnStatement(simpleParser.ReturnStatementContext ctx) {
         if (activeScope.getParent() == null) {
             result = result.substring(0, result.length()-1);
+        } else {
+            result += ";\n";
         }
     }
     
@@ -129,5 +138,35 @@ public class Translator extends simpleBaseListener {
         
         result += "static final "+constantType+" "+ctx.identifier().getText()+" = "+constant+";\n";
     }
+    
+    @Override
+    public void enterFunctionDefinition(simpleParser.FunctionDefinitionContext ctx) {
+        String type = toJavaType(ctx.type().getText());
+        String id = ctx.identifier().getText();
+        
+        result += type+" "+id+"(";
+        
+        activeScope = activeScope.findScopeOf(id);
+    }
+    
+    @Override
+    public void exitFunctionDefinition(simpleParser.FunctionDefinitionContext ctx) {
+        activeScope = activeScope.getParent();
+    }
+    
+    @Override
+    public void enterArgs(simpleParser.ArgsContext ctx) {
+        String type = toJavaType(ctx.type().getText());
+        String id = ctx.identifier().getText();
+        
+        result += type+" "+id+",";
+    }
+    
+    @Override
+    public void enterFunctionDecl(simpleParser.FunctionDeclContext ctx) {
+        result = result.substring(0,result.length()-1);
+        result += ") {\n";
+    }
+    
      
 }
