@@ -1,18 +1,11 @@
 head: {
-    subs: {
-        string func(string x) {
-            head: {
-                vars: {
-                    q: string;
-                }
-            }
-            body: {
-                ret q;
-            }
-        }
+    vars: {
+        q: string;
+        collection arr of 5: number;
     }
 }
 body: {
-    print 'Hello';
+    print q;
+    print arr[3];
     ret 0;
 }

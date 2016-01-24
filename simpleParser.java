@@ -1445,8 +1445,8 @@ public class simpleParser extends Parser {
 			return getRuleContext(IdentifierContext.class,i);
 		}
 		public TerminalNode RBRACK() { return getToken(simpleParser.RBRACK, 0); }
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
+		public SimpleExpressionContext simpleExpression() {
+			return getRuleContext(SimpleExpressionContext.class,0);
 		}
 		public TerminalNode LBRACK() { return getToken(simpleParser.LBRACK, 0); }
 		public TerminalNode DOT() { return getToken(simpleParser.DOT, 0); }
@@ -1484,7 +1484,7 @@ public class simpleParser extends Parser {
 				setState(221);
 				match(RBRACK);
 				setState(222);
-				expression();
+				simpleExpression();
 				setState(223);
 				match(LBRACK);
 				}
@@ -2803,12 +2803,12 @@ public class simpleParser extends Parser {
 		"\u00d5\u00d6\5\32\16\2\u00d6\u00db\5\n\6\2\u00d7\u00d8\7\37\2\2\u00d8"+
 		"\u00da\5&\24\2\u00d9\u00d7\3\2\2\2\u00da\u00dd\3\2\2\2\u00db\u00d9\3\2"+
 		"\2\2\u00db\u00dc\3\2\2\2\u00dc\'\3\2\2\2\u00dd\u00db\3\2\2\2\u00de\u00e5"+
-		"\5\n\6\2\u00df\u00e0\7\33\2\2\u00e0\u00e1\5<\37\2\u00e1\u00e2\7\34\2\2"+
-		"\u00e2\u00e6\3\2\2\2\u00e3\u00e4\7 \2\2\u00e4\u00e6\5\n\6\2\u00e5\u00df"+
-		"\3\2\2\2\u00e5\u00e3\3\2\2\2\u00e5\u00e6\3\2\2\2\u00e6)\3\2\2\2\u00e7"+
-		"\u00e8\7\3\2\2\u00e8\u00e9\7\35\2\2\u00e9\u00ea\7\27\2\2\u00ea\u00eb\5"+
-		".\30\2\u00eb\u00ec\5,\27\2\u00ec\u00ed\7\30\2\2\u00ed+\3\2\2\2\u00ee\u00ef"+
-		"\7\25\2\2\u00ef\u00f0\5<\37\2\u00f0\u00f1\7\36\2\2\u00f1-\3\2\2\2\u00f2"+
+		"\5\n\6\2\u00df\u00e0\7\33\2\2\u00e0\u00e1\5> \2\u00e1\u00e2\7\34\2\2\u00e2"+
+		"\u00e6\3\2\2\2\u00e3\u00e4\7 \2\2\u00e4\u00e6\5\n\6\2\u00e5\u00df\3\2"+
+		"\2\2\u00e5\u00e3\3\2\2\2\u00e5\u00e6\3\2\2\2\u00e6)\3\2\2\2\u00e7\u00e8"+
+		"\7\3\2\2\u00e8\u00e9\7\35\2\2\u00e9\u00ea\7\27\2\2\u00ea\u00eb\5.\30\2"+
+		"\u00eb\u00ec\5,\27\2\u00ec\u00ed\7\30\2\2\u00ed+\3\2\2\2\u00ee\u00ef\7"+
+		"\25\2\2\u00ef\u00f0\5<\37\2\u00f0\u00f1\7\36\2\2\u00f1-\3\2\2\2\u00f2"+
 		"\u00f3\5\60\31\2\u00f3\u00f4\7\36\2\2\u00f4\u00f6\3\2\2\2\u00f5\u00f2"+
 		"\3\2\2\2\u00f6\u00f9\3\2\2\2\u00f7\u00f5\3\2\2\2\u00f7\u00f8\3\2\2\2\u00f8"+
 		"/\3\2\2\2\u00f9\u00f7\3\2\2\2\u00fa\u0101\5:\36\2\u00fb\u0101\5\66\34"+
