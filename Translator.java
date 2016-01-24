@@ -1,4 +1,4 @@
-
+import java.util.regex.Pattern;
 
 public class Translator extends simpleBaseListener {
     
@@ -82,6 +82,13 @@ public class Translator extends simpleBaseListener {
     }
     
     @Override
+    public void exitReturnStatement(simpleParser.ReturnStatementContext ctx) {
+        if (activeScope.getParent() == null) {
+            result = result.substring(0, result.length()-1);
+        }
+    }
+    
+    @Override
     public void enterAtomicDefinition(simpleParser.AtomicDefinitionContext ctx) {
         String id = ctx.identifier().getText();
         String type = ctx.type().getText();
@@ -107,6 +114,20 @@ public class Translator extends simpleBaseListener {
         String type = toJavaType(ctx.type().getText());
         String size = ctx.NUM_INT().getText();
         result += type+"[] "+id+" = new "+type+"["+size+"];\n";
+    }
+    
+    @Override
+    public void enterConstDefinition(simpleParser.ConstDefinitionContext ctx) {
+        String constant = ctx.constant().getText().replaceAll("'","\"");
+        String constantType = "String";
+        
+        if (Pattern.matches("[0-9]+",constant)) {
+            constantType = "int";
+        } else if (Pattern.matches("[0-9]+.[0-9]+",constant)) {
+            constantType = "float";
+        }
+        
+        result += "static final "+constantType+" "+ctx.identifier().getText()+" = "+constant+";\n";
     }
      
 }

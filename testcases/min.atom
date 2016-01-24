@@ -1,4 +1,7 @@
 head: {
+    const: {
+        x = 'Blah';
+    }
     vars: {
         q: string;
         collection arr of 5: number;
