@@ -1,5 +1,16 @@
 head: {
-
+    subs: {
+        string func(string x) {
+            head: {
+                vars: {
+                    q: string;
+                }
+            }
+            body: {
+                ret q;
+            }
+        }
+    }
 }
 body: {
     print 'Hello';

@@ -77,7 +77,15 @@ functionBlock
     ;
     
 functionDefinition
-    : type identifier RPAREN (args)? LPAREN RCURL program LCURL (functionDefinition)*
+    : type identifier RPAREN (args)? LPAREN RCURL functionDecl code LCURL (functionDefinition)*
+    ;
+    
+functionDecl
+    : HEAD COL RCURL
+      ( constantBlock
+      | variableBlock
+      )*
+      LCURL
     ;
     
 args

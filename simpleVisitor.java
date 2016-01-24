@@ -112,6 +112,12 @@ public interface simpleVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunctionDefinition(simpleParser.FunctionDefinitionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link simpleParser#functionDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionDecl(simpleParser.FunctionDeclContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link simpleParser#args}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

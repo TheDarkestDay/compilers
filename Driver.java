@@ -48,6 +48,10 @@ public class Driver {
         walker.walk(listener,tree);
         listener.printScope();
         
-        System.out.println(listener.getJava());
+        Translator trans = new Translator();
+        trans.setScope(listener.getScope());
+        walker.walk(trans,tree);
+        
+        System.out.println(trans.getResult());
     }
 }

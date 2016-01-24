@@ -10,7 +10,6 @@ public class ScopeListener extends simpleBaseListener {
     Integer argsCounter;
     String expectedType;
     Scope thisFunctionScope;
-    String translatedString;
     
     public ScopeListener() {
         activeScope = new Scope("Global", null);
@@ -20,30 +19,12 @@ public class ScopeListener extends simpleBaseListener {
         assignLeftType = "";
         expectedType = "";
         argsCounter = 0;
-        translatedString="import java.utils.ArrayList;\nimport java.util.HashMap;\n\n";
     }
     
     public Scope getScope() {
         return activeScope;
     }
     
-    public String getJava() {
-        return translatedString;
-    }
-    
-    @Override
-    public void enterProgram(simpleParser.ProgramContext ctx) {
-        if (activeScope.getParent() == null) {
-            translatedString += "public class Program {\n";
-        }
-    }
-    
-    @Override
-    public void exitProgram(simpleParser.ProgramContext ctx) {
-        if (activeScope.getParent() == null) {
-            translatedString += "}";
-        }
-    }
     
     @Override
     public void enterAtomicDefinition(simpleParser.AtomicDefinitionContext ctx) {
@@ -210,6 +191,7 @@ public class ScopeListener extends simpleBaseListener {
     public void exitArgsList(simpleParser.ArgsListContext ctx) {
         argsCheck = false;
     }
+    
         
     public void printScope() {
         activeScope.print();
