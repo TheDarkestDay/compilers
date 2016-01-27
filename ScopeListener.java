@@ -58,9 +58,8 @@ public class ScopeListener extends simpleBaseListener {
     @Override
     public void enterDictDefinition(simpleParser.DictDefinitionContext ctx) {
         String id = ctx.identifier().getText();
-        String typeFirst = ctx.type(0).getText();
-        String typeSecond = ctx.type(1).getText();
-        activeScope.setTypeOf(id,"<"+typeFirst+","+typeSecond+">");
+        String typeFirst = ctx.type().getText();
+        activeScope.setTypeOf(id,typeFirst);
     }
     
     @Override 
@@ -78,7 +77,7 @@ public class ScopeListener extends simpleBaseListener {
     
     @Override
     public void enterVariable(simpleParser.VariableContext ctx) {
-        String id = ctx.identifier(0).getText();
+        String id = ctx.identifier().getText();
         Integer line = ctx.getStart().getLine();
         if (!activeScope.contains(id)) {
             System.out.println("ERR( Line "+line+" ): "+id+" does not declared in this scope");

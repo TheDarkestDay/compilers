@@ -23,6 +23,8 @@ head: {
 }
 body: {
     print q;
-    print arr[3];
+    arr[2] := 23;
+    q.text := 'Hello';
+    print q.text;
     ret 0;
 }

@@ -69,7 +69,7 @@ arrayDefinition
     ;
     
 dictDefinition
-    : DICTIONARY identifier OF type COM type SEMI (variableDefinition)*
+    : DICTIONARY identifier OF type SEMI (variableDefinition)*
     ;
     
 functionBlock
@@ -93,7 +93,11 @@ args
     ;
 
 variable
-    : identifier (RBRACK simpleExpression LBRACK | DOT identifier )?
+    : identifier (RBRACK simpleExpression LBRACK | DOT keyname )?
+    ;
+    
+keyname
+    : STRING_LITERAL | identifier
     ;
 
 code
@@ -101,7 +105,7 @@ code
     ;
     
 returnStatement
-    : RET expression SEMI
+    : RET simpleExpression SEMI
     ;
     
 statementSequence
@@ -134,7 +138,7 @@ output
     ;
     
 assign
-    : variable ASSIGN (expression | string)
+    : variable ASSIGN (simpleExpression | string)
     ;
     
 expression
@@ -155,7 +159,7 @@ signedFactor
 
 factor
     : variable
-    | LPAREN expression RPAREN
+    | LPAREN simpleExpression RPAREN
     | functionCall
     | unsignedNumber
     | NOT factor
@@ -170,7 +174,7 @@ functionCall
     ;
     
 argument
-    : expression
+    : simpleExpression
     ;
     
     

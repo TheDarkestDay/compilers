@@ -5,9 +5,13 @@ public class Translator extends simpleBaseListener {
     
     Scope activeScope;
     String result;
+    boolean enteredAssign;
+    boolean assignToHash;
     
     public Translator() {
         result="import java.utils.ArrayList;\nimport java.util.HashMap;\n\n";
+        enteredAssign = false;
+        assignToHash = false;
     }
     
     public void setScope(Scope scope) {
@@ -62,10 +66,17 @@ public class Translator extends simpleBaseListener {
     
     @Override
     public void enterVariable(simpleParser.VariableContext ctx) {
-        String id = ctx.identifier(0).getText();
+        String id = ctx.identifier().getText();
         result += id;
         if (ctx.RBRACK() != null) {
             result += "[";
+        } else {
+            if (ctx.DOT() != null && enteredAssign) {
+                result += ".put(\""+ctx.keyname().getText()+"\",";
+                assignToHash = true;
+            } else if (!enteredAssign && ctx.DOT() != null) {
+                result += ".get(\""+ctx.keyname().getText()+"\")";
+            }
         }
     }
     
@@ -74,6 +85,15 @@ public class Translator extends simpleBaseListener {
         if (ctx.RBRACK() != null) {
             result += "]";
         }
+        if (enteredAssign) {
+            if (!assignToHash) result += " = ";
+            enteredAssign = false;
+        }
+    }
+    
+    @Override
+    public void enterString(simpleParser.StringContext ctx) {
+        result += ctx.getText().replaceAll("'","\"");
     }
     
     @Override
@@ -168,5 +188,20 @@ public class Translator extends simpleBaseListener {
         result += ") {\n";
     }
     
+    
+    @Override
+    public void enterAssign(simpleParser.AssignContext ctx) {
+        enteredAssign = true;
+    }
+    
+    @Override
+    public void exitAssign(simpleParser.AssignContext ctx) {
+        enteredAssign = false;
+        if (assignToHash) {
+            result += ")";
+            assignToHash = false;
+        }
+        result += ";\n";
+    }
      
 }
