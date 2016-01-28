@@ -93,13 +93,9 @@ args
     ;
 
 variable
-    : identifier (RBRACK simpleExpression LBRACK | DOT keyname )?
+    : identifier (RBRACK simpleExpression LBRACK | DOT identifier )?
     ;
     
-keyname
-    : STRING_LITERAL | identifier
-    ;
-
 code
     : BODY COL RCURL statementSequence returnStatement LCURL
     ;

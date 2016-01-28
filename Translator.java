@@ -41,9 +41,35 @@ public class Translator extends simpleBaseListener {
     }
     
     @Override
+    public void exitInput(simpleParser.InputContext ctx) {
+        String varName = ctx.variable().getText();
+        if (varName.contains("[")) {
+            varName = varName.split("[")[0];
+        } else if (varName.contains(".")) {
+            varName = varName.split(".")[0];
+        }
+        
+        String varType = activeScope.getTypeOf(varName);
+        
+        switch (varType) {
+            case "number":
+                result += " = reader.nextInt()";
+                break;
+            case "string":
+                result += " = reader.nextLine()";
+                break;
+            case "real":
+                result += " = reader.nextFloat()";
+                break;
+        }
+        
+        result += ";\n";
+    }
+    
+    @Override
     public void enterProgram(simpleParser.ProgramContext ctx) {
         if (activeScope.getParent() == null) {
-            result += "public class Program {\n";
+            result += "public class Program {\n Scanner reader = new Scanner(System.in);\n";
         }
     }
     
@@ -66,16 +92,16 @@ public class Translator extends simpleBaseListener {
     
     @Override
     public void enterVariable(simpleParser.VariableContext ctx) {
-        String id = ctx.identifier().getText();
+        String id = ctx.identifier(0).getText();
         result += id;
         if (ctx.RBRACK() != null) {
             result += "[";
         } else {
             if (ctx.DOT() != null && enteredAssign) {
-                result += ".put(\""+ctx.keyname().getText()+"\",";
+                result += ".put(\""+ctx.identifier(1).getText()+"\",";
                 assignToHash = true;
             } else if (!enteredAssign && ctx.DOT() != null) {
-                result += ".get(\""+ctx.keyname().getText()+"\")";
+                result += ".get(\""+ctx.identifier(1).getText()+"\")";
             }
         }
     }
@@ -156,7 +182,12 @@ public class Translator extends simpleBaseListener {
             constantType = "float";
         }
         
-        result += "static final "+constantType+" "+ctx.identifier().getText()+" = "+constant+";\n";
+        result += "static final "+constantType+" "+ctx.identifier().getText()+" = ";
+    }
+    
+    @Override
+    public void exitConstDefinition(simpleParser.ConstDefinitionContext ctx) {
+        result += ";\n";
     }
     
     @Override

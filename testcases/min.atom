@@ -16,12 +16,14 @@ head: {
                 }
             }
             body: {
+                get u;
                 ret 0;
             }
         }
     }
 }
 body: {
+    get q;
     print q;
     arr[2] := 23;
     q.text := 'Hello';

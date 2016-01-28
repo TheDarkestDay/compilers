@@ -255,18 +255,6 @@ public class simpleBaseListener implements simpleListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterKeyname(simpleParser.KeynameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitKeyname(simpleParser.KeynameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterCode(simpleParser.CodeContext ctx) { }
 	/**
 	 * {@inheritDoc}
