@@ -154,6 +154,12 @@ public interface simpleVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(simpleParser.StatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link simpleParser#subblock}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSubblock(simpleParser.SubblockContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link simpleParser#loop}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -165,6 +171,12 @@ public interface simpleVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCondition(simpleParser.ConditionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link simpleParser#elseBranch}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElseBranch(simpleParser.ElseBranchContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link simpleParser#input}.
 	 * @param ctx the parse tree

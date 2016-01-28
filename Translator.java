@@ -7,13 +7,13 @@ public class Translator extends simpleBaseListener {
     String result;
     boolean enteredAssign;
     boolean assignToHash;
-    boolean needToCloseParen;
+    boolean insideFunction;
     
     public Translator() {
         result="import java.util.*;\n\n";
         enteredAssign = false;
         assignToHash = false;
-        needToCloseParen = false;
+        insideFunction = false;
     }
     
     public void setScope(Scope scope) {
@@ -83,11 +83,26 @@ public class Translator extends simpleBaseListener {
     }
     
     @Override
+    public void enterSubblock(simpleParser.SubblockContext ctx) {
+        result += "{\n";
+    }
+    
+    @Override
+    public void exitSubblock(simpleParser.SubblockContext ctx) {
+        result += "}\n";
+    }
+    
+    @Override
+    public void enterElseBranch(simpleParser.ElseBranchContext ctx) {
+        result += "else";
+    }
+    
+    @Override
     public void exitProgram(simpleParser.ProgramContext ctx) {
         if (activeScope.getParent() == null) {
             result += "}";
         }
-    }
+    } 
     
     @Override
     public void enterOutput(simpleParser.OutputContext ctx) {
@@ -210,9 +225,28 @@ public class Translator extends simpleBaseListener {
     }
     
     @Override
+    public void enterLoop(simpleParser.LoopContext ctx) {
+        result += "while ";
+    }
+    
+    @Override
     public void exitCode(simpleParser.CodeContext ctx) {
         result += "}";
     }
+    
+  /*  @Override
+    public void enterStatementSequence(simpleParser.StatementSequenceContext ctx) {
+        if (insideFunction) {
+            insideFunction = false;
+        } else {
+            result += "{\n";
+        }
+    }
+    
+    @Override
+    public void exitStatementSequence(simpleParser.StatementSequenceContext ctx) {
+        result += "}";
+    } */
     
     @Override
     public void enterArrayDefinition(simpleParser.ArrayDefinitionContext ctx) {
@@ -249,6 +283,7 @@ public class Translator extends simpleBaseListener {
         result += type+" "+id+"(";
         
         activeScope = activeScope.findScopeOf(id);
+        insideFunction = true;
     }
     
     @Override
@@ -285,6 +320,21 @@ public class Translator extends simpleBaseListener {
             assignToHash = false;
         }
         result += ";\n";
+    }
+    
+    @Override
+    public void enterCondition(simpleParser.ConditionContext ctx) {
+        result += "if ";
+    }
+    
+    @Override
+    public void enterExpression(simpleParser.ExpressionContext ctx) {
+        result += "(";
+    }
+    
+    @Override
+    public void exitExpression(simpleParser.ExpressionContext ctx) {
+        result += ") {\n";
     }
      
 }

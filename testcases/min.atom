@@ -25,6 +25,14 @@ head: {
 }
 body: {
     get q;
+    if q>5 {
+       print q;
+    } else {
+       print a;
+    };
+    while q<5 {
+        q := q-1;
+    };
     arr[2] := 23*(23+7);
     print q.text*4+3;
     q.text := 'Hello';
