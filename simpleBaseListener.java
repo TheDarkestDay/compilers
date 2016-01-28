@@ -375,6 +375,18 @@ public class simpleBaseListener implements simpleListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterRelop(simpleParser.RelopContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRelop(simpleParser.RelopContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterSimpleExpression(simpleParser.SimpleExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -387,6 +399,18 @@ public class simpleBaseListener implements simpleListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterLowop(simpleParser.LowopContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLowop(simpleParser.LowopContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterTerm(simpleParser.TermContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -394,6 +418,18 @@ public class simpleBaseListener implements simpleListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitTerm(simpleParser.TermContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterHighop(simpleParser.HighopContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitHighop(simpleParser.HighopContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

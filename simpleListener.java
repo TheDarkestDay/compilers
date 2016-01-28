@@ -307,6 +307,16 @@ public interface simpleListener extends ParseTreeListener {
 	 */
 	void exitExpression(simpleParser.ExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link simpleParser#relop}.
+	 * @param ctx the parse tree
+	 */
+	void enterRelop(simpleParser.RelopContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link simpleParser#relop}.
+	 * @param ctx the parse tree
+	 */
+	void exitRelop(simpleParser.RelopContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link simpleParser#simpleExpression}.
 	 * @param ctx the parse tree
 	 */
@@ -317,6 +327,16 @@ public interface simpleListener extends ParseTreeListener {
 	 */
 	void exitSimpleExpression(simpleParser.SimpleExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link simpleParser#lowop}.
+	 * @param ctx the parse tree
+	 */
+	void enterLowop(simpleParser.LowopContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link simpleParser#lowop}.
+	 * @param ctx the parse tree
+	 */
+	void exitLowop(simpleParser.LowopContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link simpleParser#term}.
 	 * @param ctx the parse tree
 	 */
@@ -326,6 +346,16 @@ public interface simpleListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitTerm(simpleParser.TermContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link simpleParser#highop}.
+	 * @param ctx the parse tree
+	 */
+	void enterHighop(simpleParser.HighopContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link simpleParser#highop}.
+	 * @param ctx the parse tree
+	 */
+	void exitHighop(simpleParser.HighopContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link simpleParser#signedFactor}.
 	 * @param ctx the parse tree

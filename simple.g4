@@ -130,7 +130,7 @@ input
     ;
     
 output
-    : PRINT (variable | string)
+    : PRINT (simpleExpression | string)
     ;
     
 assign
@@ -138,15 +138,27 @@ assign
     ;
     
 expression
-    : simpleExpression( (EQUAL | NOT_EQUAL | LT | LE | GE | GT ) simpleExpression )*
+    : simpleExpression( relop simpleExpression )*
     ;
-
+    
+relop
+    : EQUAL | NOT_EQUAL | GT | LT | GE | LE
+    ;
+    
 simpleExpression
-    : term ( (PLUS | MINUS | OR) term )*
+    : term ( lowop term )*
+    ;
+    
+lowop
+    : PLUS | MINUS | OR
     ;
 
 term
-    : signedFactor ( (STAR | SLASH | AND) signedFactor )*
+    : signedFactor ( highop signedFactor )*
+    ;
+
+highop
+    : STAR | SLASH | AND
     ;
 
 signedFactor
@@ -155,7 +167,7 @@ signedFactor
 
 factor
     : variable
-    | LPAREN simpleExpression RPAREN
+    | RPAREN simpleExpression LPAREN
     | functionCall
     | unsignedNumber
     | NOT factor

@@ -7,11 +7,13 @@ public class Translator extends simpleBaseListener {
     String result;
     boolean enteredAssign;
     boolean assignToHash;
+    boolean needToCloseParen;
     
     public Translator() {
         result="import java.util.*;\n\n";
         enteredAssign = false;
         assignToHash = false;
+        needToCloseParen = false;
     }
     
     public void setScope(Scope scope) {
@@ -129,8 +131,50 @@ public class Translator extends simpleBaseListener {
         result += ctx.getText().replaceAll("'","\"");
     }
     
-    @Override
+ /*   @Override
     public void enterSimpleExpression(simpleParser.SimpleExpressionContext ctx) {
+        result += ctx.getText();
+    } */
+    
+    @Override
+    public void enterRelop(simpleParser.RelopContext ctx) {
+        result += ctx.getText();
+    }
+    
+    @Override
+    public void enterLowop(simpleParser.LowopContext ctx) {
+        result += ctx.getText();
+    }
+    
+    @Override
+    public void enterHighop(simpleParser.HighopContext ctx) {
+        result += ctx.getText();
+    }
+    
+    @Override
+    public void enterSignedFactor(simpleParser.SignedFactorContext ctx) {
+        if (ctx.PLUS() != null) result += "+";
+        if (ctx.MINUS() != null) result += "-";
+    }
+    
+    @Override
+    public void enterFactor(simpleParser.FactorContext ctx) {
+        if (ctx.NOT() != null) {
+            result += "!";
+        } else if (ctx.RPAREN() != null) {
+            result += "(";
+        }
+    }
+    
+    @Override
+    public void exitFactor(simpleParser.FactorContext ctx) {
+        if (ctx.LPAREN() != null) {
+            result += ")";
+        }
+    }
+    
+    @Override
+    public void enterUnsignedNumber(simpleParser.UnsignedNumberContext ctx) {
         result += ctx.getText();
     }
     

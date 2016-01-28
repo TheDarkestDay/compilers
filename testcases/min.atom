@@ -25,9 +25,8 @@ head: {
 }
 body: {
     get q;
-    print q;
-    arr[2] := 23;
+    arr[2] := 23*(23+7);
+    print q.text*4+3;
     q.text := 'Hello';
-    print q.text;
     ret 0;
 }

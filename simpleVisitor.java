@@ -190,17 +190,35 @@ public interface simpleVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression(simpleParser.ExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link simpleParser#relop}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRelop(simpleParser.RelopContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link simpleParser#simpleExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitSimpleExpression(simpleParser.SimpleExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link simpleParser#lowop}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLowop(simpleParser.LowopContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link simpleParser#term}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitTerm(simpleParser.TermContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link simpleParser#highop}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitHighop(simpleParser.HighopContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link simpleParser#signedFactor}.
 	 * @param ctx the parse tree
