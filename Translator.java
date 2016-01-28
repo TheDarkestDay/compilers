@@ -64,15 +64,13 @@ public class Translator extends simpleBaseListener {
                 result += " = reader.nextFloat()";
                 break;
         }
-        
-        result += ";\n";
     }
     
     @Override
     public void enterDictDefinition(simpleParser.DictDefinitionContext ctx) {
         String id = ctx.identifier().getText();
         
-        result += "HashMap "+id+" = "+"new HashMap():\n";
+        result += "HashMap "+id+" = "+"new HashMap();\n";
     }
         
     @Override
@@ -89,7 +87,7 @@ public class Translator extends simpleBaseListener {
     
     @Override
     public void exitSubblock(simpleParser.SubblockContext ctx) {
-        result += "}\n";
+        result += "}";
     }
     
     @Override
@@ -111,7 +109,7 @@ public class Translator extends simpleBaseListener {
     
     @Override
     public void exitOutput(simpleParser.OutputContext ctx) {
-        result += ");\n";
+        result += ")";
     }
     
     @Override
@@ -144,6 +142,28 @@ public class Translator extends simpleBaseListener {
     @Override
     public void enterString(simpleParser.StringContext ctx) {
         result += ctx.getText().replaceAll("'","\"");
+    }
+    
+    @Override
+    public void enterFunctionCall(simpleParser.FunctionCallContext ctx) {
+        String funcName = ctx.identifier().getText();
+        result += funcName+"(";
+    }
+    
+    @Override
+    public void exitArgument(simpleParser.ArgumentContext ctx) {
+        result += ",";
+    }
+    
+    @Override
+    public void exitFunctionCall(simpleParser.FunctionCallContext ctx) {
+        result = result.substring(0, result.length()-1);
+        result += ")";
+    }
+    
+    @Override
+    public void exitStatement(simpleParser.StatementContext ctx) {
+        result += ";\n";
     }
     
  /*   @Override
@@ -233,21 +253,7 @@ public class Translator extends simpleBaseListener {
     public void exitCode(simpleParser.CodeContext ctx) {
         result += "}";
     }
-    
-  /*  @Override
-    public void enterStatementSequence(simpleParser.StatementSequenceContext ctx) {
-        if (insideFunction) {
-            insideFunction = false;
-        } else {
-            result += "{\n";
-        }
-    }
-    
-    @Override
-    public void exitStatementSequence(simpleParser.StatementSequenceContext ctx) {
-        result += "}";
-    } */
-    
+        
     @Override
     public void enterArrayDefinition(simpleParser.ArrayDefinitionContext ctx) {
         String id = ctx.identifier().getText();
@@ -319,7 +325,6 @@ public class Translator extends simpleBaseListener {
             result += ")";
             assignToHash = false;
         }
-        result += ";\n";
     }
     
     @Override
