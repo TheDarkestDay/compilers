@@ -9,7 +9,7 @@ public class Translator extends simpleBaseListener {
     boolean assignToHash;
     
     public Translator() {
-        result="import java.utils.ArrayList;\nimport java.util.HashMap;\n\n";
+        result="import java.util.*;\n\n";
         enteredAssign = false;
         assignToHash = false;
     }
@@ -66,6 +66,13 @@ public class Translator extends simpleBaseListener {
         result += ";\n";
     }
     
+    @Override
+    public void enterDictDefinition(simpleParser.DictDefinitionContext ctx) {
+        String id = ctx.identifier().getText();
+        
+        result += "HashMap "+id+" = "+"new HashMap():\n";
+    }
+        
     @Override
     public void enterProgram(simpleParser.ProgramContext ctx) {
         if (activeScope.getParent() == null) {
@@ -203,6 +210,7 @@ public class Translator extends simpleBaseListener {
     @Override
     public void exitFunctionDefinition(simpleParser.FunctionDefinitionContext ctx) {
         activeScope = activeScope.getParent();
+        result += "\n";
     }
     
     @Override

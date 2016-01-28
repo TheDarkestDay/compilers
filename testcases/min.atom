@@ -5,6 +5,7 @@ head: {
     vars: {
         q: string;
         collection arr of 5: number;
+        dictionary book of string;
     }
     subs: {
         number greet(string q, real y) {
