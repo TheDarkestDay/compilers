@@ -1,41 +1,14 @@
 head: {
-    const: {
-        x = 'Blah';
-    }
     vars: {
-        q: string;
-        collection arr of 5: number;
-        dictionary book of string;
-    }
-    subs: {
-        number greet(string q, real y) {
-            head: {
-                vars: {
-                    z: number;
-                    v: string;
-                    u: real;
-                }
-            }
-            body: {
-                get u;
-                ret 0;
-            }
-        }
+        q: number;
+        dictionary map of number;
+        collection nums of 5:number;
     }
 }
 body: {
     get q;
-    if q>5 {
-       print q;
-    } else {
-       print a;
-    };
-    while q<5 {
-        q := q-1;
-    };
-    greet(q,y);
-    arr[2] := 23*(23+7);
-    print q.text*4+3;
-    q.text := 'Hello';
+    print q*5+7;
+    map.text := 'Hello';
+    print map.text;
     ret 0;
 }

@@ -105,7 +105,7 @@ returnStatement
     ;
     
 statementSequence
-    : (statement SEMI)*
+    : ((statement | compStatement) SEMI)*
     ;
     
 statement
@@ -113,7 +113,10 @@ statement
     | input
     | output
     | functionCall
-    | condition
+    ;
+    
+compStatement
+    : condition
     | loop
     ;
     

@@ -45,13 +45,25 @@ public class Translator extends simpleBaseListener {
     @Override
     public void exitInput(simpleParser.InputContext ctx) {
         String varName = ctx.variable().getText();
-        if (varName.contains("[")) {
+        if (varName.contains("\\[")) {
             varName = varName.split("[")[0];
         } else if (varName.contains(".")) {
             varName = varName.split(".")[0];
         }
         
+        //System.out.println(varName);
+        
         String varType = activeScope.getTypeOf(varName);
+        
+        //System.out.println(varType);
+        
+        if (varType.contains("number")) {
+            varType = "number";
+        } else if (varType.contains("real")) {
+            varType = "real";
+        } else if (varType.contains("string")) {
+            varType = "string";
+        }
         
         switch (varType) {
             case "number":
@@ -70,13 +82,13 @@ public class Translator extends simpleBaseListener {
     public void enterDictDefinition(simpleParser.DictDefinitionContext ctx) {
         String id = ctx.identifier().getText();
         
-        result += "HashMap "+id+" = "+"new HashMap();\n";
+        result += "static HashMap "+id+" = "+"new HashMap();\n";
     }
         
     @Override
     public void enterProgram(simpleParser.ProgramContext ctx) {
         if (activeScope.getParent() == null) {
-            result += "public class Program {\n Scanner reader = new Scanner(System.in);\n";
+            result += "public class Program {\n static Scanner reader = new Scanner(System.in);\n";
         }
     }
     
@@ -166,11 +178,6 @@ public class Translator extends simpleBaseListener {
         result += ";\n";
     }
     
- /*   @Override
-    public void enterSimpleExpression(simpleParser.SimpleExpressionContext ctx) {
-        result += ctx.getText();
-    } */
-    
     @Override
     public void enterRelop(simpleParser.RelopContext ctx) {
         result += ctx.getText();
@@ -234,7 +241,7 @@ public class Translator extends simpleBaseListener {
         String id = ctx.identifier().getText();
         String type = ctx.type().getText();
         
-        result+=toJavaType(type)+" "+id+";\n";
+        result+="static "+toJavaType(type)+" "+id+";\n";
     }
     
     @Override
@@ -250,6 +257,10 @@ public class Translator extends simpleBaseListener {
     }
     
     @Override
+    public void exitLoop(simpleParser.LoopContext ctx) {
+    }
+    
+    @Override
     public void exitCode(simpleParser.CodeContext ctx) {
         result += "}";
     }
@@ -259,7 +270,7 @@ public class Translator extends simpleBaseListener {
         String id = ctx.identifier().getText();
         String type = toJavaType(ctx.type().getText());
         String size = ctx.NUM_INT().getText();
-        result += type+"[] "+id+" = new "+type+"["+size+"];\n";
+        result += "static "+type+"[] "+id+" = new "+type+"["+size+"];\n";
     }
     
     @Override
@@ -339,7 +350,7 @@ public class Translator extends simpleBaseListener {
     
     @Override
     public void exitExpression(simpleParser.ExpressionContext ctx) {
-        result += ") {\n";
+        result += ")";
     }
      
 }
