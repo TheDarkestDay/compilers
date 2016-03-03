@@ -1,14 +1,6 @@
 head: {
-    vars: {
-        q: number;
-        dictionary map of number;
-        collection nums of 5:number;
-    }
 }
 body: {
-    get q;
-    print q*5+7;
-    map.text := 'Hello';
-    print map.text;
+    print "Hello";
     ret 0;
 }
