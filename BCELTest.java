@@ -2,12 +2,12 @@
 public class BCELTest {
     
     public static int greet(int dbl) {
+        int flag = 1;
         return dbl*3;
     }
     
     public static void main(String[] args) {
         int x = greet(2);
-        double y = 3.14;
         int z = 4;
         int v = 8;
         int t = 10;

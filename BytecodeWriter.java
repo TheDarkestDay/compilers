@@ -13,6 +13,7 @@ public class BytecodeWriter extends simpleBaseListener {
     
     private Stack<InstructionList> ils;
     private Stack<MethodGen> methods;
+    private Stack<HashMap<String, Integer>> variables;
     
     
     public BytecodeWriter() {
@@ -34,6 +35,7 @@ public class BytecodeWriter extends simpleBaseListener {
         
         ils = new Stack<InstructionList>();
         methods = new Stack<MethodGen>();
+        variables = new Stack<HashMap<String, Integer>>();
     }
     
     public void writeClass() throws Exception {
@@ -50,6 +52,7 @@ public class BytecodeWriter extends simpleBaseListener {
         
         ils.push(il);
         methods.push(method);
+        variables.push(new HashMap<String, Integer>());
     }
     
     @Override
@@ -65,13 +68,18 @@ public class BytecodeWriter extends simpleBaseListener {
     } 
     
     @Override
+    public void enterOutput(simpleParser.OutputContext ctx) {
+        ils.peek().append(_factory.createFieldAccess("java.lang.System", "out", new ObjectType("java.io.PrintStream"), Constants.GETSTATIC));
+    }
+    
+    @Override
+    public void enterString(simpleParser.StringContext ctx) {
+        String literal = ctx.getText();
+        ils.peek().append(new PUSH(_cp, literal));
+    }
+    
+    @Override
     public void exitOutput(simpleParser.OutputContext ctx) {
-        InstructionList il = ils.peek();
-        MethodGen method = methods.peek();
-        
-        String literal = ctx.string().getText();
-        il.append(_factory.createFieldAccess("java.lang.System", "out", new ObjectType("java.io.PrintStream"), Constants.GETSTATIC));
-        il.append(new PUSH(_cp, literal));
-        il.append(_factory.createInvoke("java.io.PrintStream", "println", Type.VOID, new Type[] { Type.STRING }, Constants.INVOKEVIRTUAL));
+        ils.peek().append(_factory.createInvoke("java.io.PrintStream", "println", Type.VOID, new Type[] { Type.STRING }, Constants.INVOKEVIRTUAL));
     }
 }
