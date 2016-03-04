@@ -42,8 +42,6 @@ public class BytecodeWriter extends simpleBaseListener {
         _cg.getJavaClass().dump(new FileOutputStream("Program.class"));
     }
     
-/*    public byte[] getBytecode() {
-    } */
     
     @Override
     public void enterProgram(simpleParser.ProgramContext ctx) { 
@@ -80,6 +78,15 @@ public class BytecodeWriter extends simpleBaseListener {
     
     @Override
     public void exitOutput(simpleParser.OutputContext ctx) {
-        ils.peek().append(_factory.createInvoke("java.io.PrintStream", "println", Type.VOID, new Type[] { Type.STRING }, Constants.INVOKEVIRTUAL));
+        Type[] argType = new Type[] { Type.INT };
+        if (ctx.string() != null) {
+            argType[0] = Type.STRING;
+        }
+        ils.peek().append(_factory.createInvoke("java.io.PrintStream", "println", Type.VOID, argType, Constants.INVOKEVIRTUAL));
+    }
+    
+    @Override
+    public void enterUnsignedNumber(simpleParser.UnsignedNumberContext ctx) {
+        ils.peek().append(new PUSH(_cp, Integer.parseInt(ctx.getText())));
     }
 }

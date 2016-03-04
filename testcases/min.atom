@@ -1,6 +1,6 @@
 head: {
 }
 body: {
-    print 'Hello, world!';
+    print 'Hi there!';
     ret 0;
 }
