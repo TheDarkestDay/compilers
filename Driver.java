@@ -14,8 +14,8 @@ import javax.tools.*;
 import java.io.PrintWriter;
 import java.io.File;
 
-import org.objectweb.asm.Attribute;
-/*import java.io.IOException;
+/*import org.objectweb.asm.Attribute;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -72,6 +72,6 @@ public class Driver {
   //      trans.setScope(listener.getScope());
         walker.walk(trans,tree);
         
-    
+        trans.writeClass();
     }
 }

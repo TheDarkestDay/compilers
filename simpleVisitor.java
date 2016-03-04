@@ -160,12 +160,6 @@ public interface simpleVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCompStatement(simpleParser.CompStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link simpleParser#subblock}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSubblock(simpleParser.SubblockContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link simpleParser#loop}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

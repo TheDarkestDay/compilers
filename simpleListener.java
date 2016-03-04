@@ -257,16 +257,6 @@ public interface simpleListener extends ParseTreeListener {
 	 */
 	void exitCompStatement(simpleParser.CompStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link simpleParser#subblock}.
-	 * @param ctx the parse tree
-	 */
-	void enterSubblock(simpleParser.SubblockContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link simpleParser#subblock}.
-	 * @param ctx the parse tree
-	 */
-	void exitSubblock(simpleParser.SubblockContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link simpleParser#loop}.
 	 * @param ctx the parse tree
 	 */

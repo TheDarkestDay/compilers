@@ -119,21 +119,17 @@ compStatement
     : condition
     | loop
     ;
-    
-subblock
-    : (statement SEMI)*
-    ;
-    
+        
 loop
-    : WHILE expression RCURL subblock LCURL
+    : WHILE expression RCURL statementSequence LCURL
     ;
     
 condition
-    : IF expression RCURL subblock LCURL (elseBranch)?
+    : IF expression RCURL statementSequence LCURL (elseBranch)?
     ;
     
 elseBranch
-    : ELSE RCURL subblock LCURL
+    : ELSE RCURL statementSequence LCURL
     ;
     
 input
