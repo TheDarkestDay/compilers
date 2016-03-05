@@ -14,7 +14,25 @@ public class BytecodeWriter extends simpleBaseListener {
     private Stack<InstructionList> ils;
     private Stack<MethodGen> methods;
     private Stack<HashMap<String, Integer>> variables;
+    private Stack<String> operators;
     
+    
+    private void processOp(String op) {
+        switch(op) {
+            case "+":
+                ils.peek().append(InstructionConstants.IADD);
+                break;
+            case "*":
+                ils.peek().append(InstructionConstants.IMUL);
+                break;
+            case "/":
+                ils.peek().append(InstructionConstants.IDIV);
+                break;
+            case "-":
+                ils.peek().append(InstructionConstants.ISUB);
+                break;
+        }
+    }
     
     public BytecodeWriter() {
         _cg = new ClassGen("Program", "java.lang.Object", "Program.java", ACC_PUBLIC | ACC_SUPER, new String[] {  });
@@ -36,11 +54,14 @@ public class BytecodeWriter extends simpleBaseListener {
         ils = new Stack<InstructionList>();
         methods = new Stack<MethodGen>();
         variables = new Stack<HashMap<String, Integer>>();
+        operators = new Stack<String>();
     }
     
     public void writeClass() throws Exception {
         _cg.getJavaClass().dump(new FileOutputStream("Program.class"));
     }
+    
+    
     
     
     @Override
@@ -88,5 +109,38 @@ public class BytecodeWriter extends simpleBaseListener {
     @Override
     public void enterUnsignedNumber(simpleParser.UnsignedNumberContext ctx) {
         ils.peek().append(new PUSH(_cp, Integer.parseInt(ctx.getText())));
+    }
+    
+    @Override
+    public void enterLowop(simpleParser.LowopContext ctx) {
+        String op = ctx.getText();
+        
+        if (!operators.empty() && (operators.peek() == "+" || operators.peek() == "-")) {
+            while (!operators.empty()) {
+                processOp(operators.pop());
+            }
+        }
+        
+        operators.push(op);
+    }
+    
+    @Override
+    public void enterHighop(simpleParser.HighopContext ctx) {
+        String op = ctx.getText();
+        
+        if (!operators.empty()) {
+            while (operators.peek() == "*" || operators.peek() == "/") {
+                processOp(operators.pop());
+            }
+        }
+        
+        operators.push(op);
+    }
+    
+    @Override
+    public void exitExpression(simpleParser.ExpressionContext ctx) {
+        while (!operators.empty()) {
+            processOp(operators.pop());
+        }
     }
 }
