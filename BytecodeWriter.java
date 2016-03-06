@@ -89,6 +89,7 @@ public class BytecodeWriter extends simpleBaseListener {
     @Override
     public void enterOutput(simpleParser.OutputContext ctx) {
         ils.peek().append(_factory.createFieldAccess("java.lang.System", "out", new ObjectType("java.io.PrintStream"), Constants.GETSTATIC));
+        System.out.println("Field access created");
     }
     
     @Override
@@ -104,6 +105,7 @@ public class BytecodeWriter extends simpleBaseListener {
             argType[0] = Type.STRING;
         }
         ils.peek().append(_factory.createInvoke("java.io.PrintStream", "println", Type.VOID, argType, Constants.INVOKEVIRTUAL));
+        System.out.println("Invoked println");
     }
     
     @Override
@@ -115,10 +117,8 @@ public class BytecodeWriter extends simpleBaseListener {
     public void enterLowop(simpleParser.LowopContext ctx) {
         String op = ctx.getText();
         
-        if (!operators.empty() && (operators.peek() == "+" || operators.peek() == "-")) {
-            while (!operators.empty()) {
-                processOp(operators.pop());
-            }
+        while(!operators.empty()) {
+            processOp(operators.pop());
         }
         
         operators.push(op);
@@ -129,7 +129,7 @@ public class BytecodeWriter extends simpleBaseListener {
         String op = ctx.getText();
         
         if (!operators.empty()) {
-            while (operators.peek() == "*" || operators.peek() == "/") {
+            while (operators.peek().equals("*") || operators.peek().equals("/")) {
                 processOp(operators.pop());
             }
         }
@@ -138,7 +138,7 @@ public class BytecodeWriter extends simpleBaseListener {
     }
     
     @Override
-    public void exitExpression(simpleParser.ExpressionContext ctx) {
+    public void exitSimpleExpression(simpleParser.SimpleExpressionContext ctx) {
         while (!operators.empty()) {
             processOp(operators.pop());
         }

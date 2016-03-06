@@ -1,6 +1,5 @@
 head: {
 }
 body: {
-    print 2+5;
-    ret 0;
+    print 7*5+2-1*10;
 }

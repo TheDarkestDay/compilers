@@ -97,7 +97,7 @@ variable
     ;
     
 code
-    : BODY COL RCURL statementSequence returnStatement LCURL
+    : BODY COL RCURL statementSequence (returnStatement)? LCURL
     ;
     
 returnStatement
