@@ -68,7 +68,7 @@ public class Driver {
         walker.walk(listener,tree);
     //    listener.printScope();
         
-        BytecodeWriter trans = new BytecodeWriter();
+        BytecodeWriter trans = new BytecodeWriter(listener.getScope());
   //      trans.setScope(listener.getScope());
         walker.walk(trans,tree);
         

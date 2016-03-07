@@ -15,6 +15,8 @@ public class BytecodeWriter extends simpleBaseListener {
     private Stack<MethodGen> methods;
     private Stack<HashMap<String, Integer>> variables;
     private Stack<String> operators;
+    private Stack<Integer> varCounters;
+    private Scope scp;
     
     
     private void processOp(String op) {
@@ -34,7 +36,19 @@ public class BytecodeWriter extends simpleBaseListener {
         }
     }
     
-    public BytecodeWriter() {
+    private Type toBCELType(String tp) {
+        switch(tp) {
+            case "number":
+                return Type.INT;
+            case "string":
+                return Type.OBJECT;
+            case "real":
+                return Type.DOUBLE;
+        }
+        return Type.INT;
+    }
+    
+    public BytecodeWriter(Scope scope) {
         _cg = new ClassGen("Program", "java.lang.Object", "Program.java", ACC_PUBLIC | ACC_SUPER, new String[] {  });
 
         _cp = _cg.getConstantPool();
@@ -51,10 +65,14 @@ public class BytecodeWriter extends simpleBaseListener {
         _cg.addMethod(method.getMethod());
         il.dispose();
         
+        scp = scope;
+        
         ils = new Stack<InstructionList>();
         methods = new Stack<MethodGen>();
         variables = new Stack<HashMap<String, Integer>>();
         operators = new Stack<String>();
+        varCounters = new Stack<Integer>();
+        varCounters.push(0);
     }
     
     public void writeClass() throws Exception {
@@ -75,6 +93,39 @@ public class BytecodeWriter extends simpleBaseListener {
     }
     
     @Override
+    public void exitAtomicDefinition(AtomicDefinitionContext ctx) {
+        
+    }
+    
+    @Override
+    public void exitAssign(simpleParser.AssignContext ctx) {
+        String name = ctx.variable().getText();
+        int varIndex = variables.peek().get(name);
+        String varType = scp.getTypeOf(name);
+        
+        switch(varType) {
+            case "number":
+                ils.peek().append(_factory.createStore(Type.INT, varIndex));
+                break;
+            case "string":
+                ils.peek().append(_factory.createStore(Type.OBJECT, varIndex));
+                break;
+            case "real":
+                ils.peek().append(_factory.createStore(Type.DOUBLE, varIndex));
+                break;
+        }
+    }
+    
+    @Override
+    public void exitVariable(simpleParser.VariableContext ctx) {
+        String varName = ctx.identifier(0).getText();
+        String varType = scp.getTypeOf(varName);
+        int varIndex = variables.peek().get(varName);
+        
+        ils.peek().append(_factory.createLoad(toBCELType(varType), varIndex));
+    }
+    
+    @Override
     public void exitProgram(simpleParser.ProgramContext ctx) {
         InstructionList il = ils.peek();
         MethodGen method = methods.peek();
@@ -89,7 +140,6 @@ public class BytecodeWriter extends simpleBaseListener {
     @Override
     public void enterOutput(simpleParser.OutputContext ctx) {
         ils.peek().append(_factory.createFieldAccess("java.lang.System", "out", new ObjectType("java.io.PrintStream"), Constants.GETSTATIC));
-        System.out.println("Field access created");
     }
     
     @Override
@@ -105,7 +155,6 @@ public class BytecodeWriter extends simpleBaseListener {
             argType[0] = Type.STRING;
         }
         ils.peek().append(_factory.createInvoke("java.io.PrintStream", "println", Type.VOID, argType, Constants.INVOKEVIRTUAL));
-        System.out.println("Invoked println");
     }
     
     @Override

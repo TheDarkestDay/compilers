@@ -145,7 +145,11 @@ assign
     ;
     
 expression
-    : simpleExpression( relop simpleExpression )*
+    : simpleExpression relop simpleExpression (logop expression)*
+    ;
+    
+logop
+    : AND | OR
     ;
     
 relop
@@ -157,7 +161,7 @@ simpleExpression
     ;
     
 lowop
-    : PLUS | MINUS | OR
+    : PLUS | MINUS
     ;
 
 term
@@ -165,7 +169,7 @@ term
     ;
 
 highop
-    : STAR | SLASH | AND
+    : STAR | SLASH
     ;
 
 signedFactor

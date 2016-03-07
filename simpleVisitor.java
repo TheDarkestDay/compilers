@@ -202,6 +202,12 @@ public interface simpleVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression(simpleParser.ExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link simpleParser#logop}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLogop(simpleParser.LogopContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link simpleParser#relop}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

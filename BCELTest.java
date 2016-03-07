@@ -8,11 +8,17 @@ public class BCELTest {
     
     public static void main(String[] args) {
         int x = greet(2);
+        int g;
         int z = 4;
         int v = 8;
         int t = 10;
+        double w = 1.5;
         String word = "Haha";
         System.out.println(6+x*33);
+        System.out.println("Hello, world!");
+        while(z > 20 || z < 100) {
+            z = z + 1;
+        }
         System.out.println("Hello, world!");
     }
 }
