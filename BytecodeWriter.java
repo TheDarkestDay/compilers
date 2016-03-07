@@ -18,6 +18,8 @@ public class BytecodeWriter extends simpleBaseListener {
     private Stack<Integer> varCounters;
     private Scope scp;
     
+    boolean leftSideOfAssign;
+    
     
     private void processOp(String op) {
         switch(op) {
@@ -66,6 +68,7 @@ public class BytecodeWriter extends simpleBaseListener {
         il.dispose();
         
         scp = scope;
+        leftSideOfAssign = false;
         
         ils = new Stack<InstructionList>();
         methods = new Stack<MethodGen>();
@@ -93,8 +96,20 @@ public class BytecodeWriter extends simpleBaseListener {
     }
     
     @Override
-    public void exitAtomicDefinition(AtomicDefinitionContext ctx) {
+    public void exitAtomicDefinition(simpleParser.AtomicDefinitionContext ctx) {
+        String varType = ctx.type().getText();
+        String varName = ctx.identifier().getText();
+        int varIndex = varCounters.pop();
         
+        if (varType.equals("real")) {
+            varIndex += 2;
+        } else {
+            varIndex++;
+        }
+        
+        varCounters.push(varIndex);
+        
+        variables.peek().put(varName, varCounters.peek());
     }
     
     @Override
@@ -117,12 +132,20 @@ public class BytecodeWriter extends simpleBaseListener {
     }
     
     @Override
+    public void enterAssign(simpleParser.AssignContext ctx) {
+        leftSideOfAssign = true;
+    }
+    
+    @Override
     public void exitVariable(simpleParser.VariableContext ctx) {
-        String varName = ctx.identifier(0).getText();
-        String varType = scp.getTypeOf(varName);
-        int varIndex = variables.peek().get(varName);
-        
-        ils.peek().append(_factory.createLoad(toBCELType(varType), varIndex));
+        if (leftSideOfAssign) {
+            leftSideOfAssign = false;
+        } else {
+            String varName = ctx.identifier(0).getText();
+            String varType = scp.getTypeOf(varName);
+            int varIndex = variables.peek().get(varName);
+            ils.peek().append(_factory.createLoad(toBCELType(varType), varIndex));
+        }
     }
     
     @Override
