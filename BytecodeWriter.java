@@ -182,7 +182,12 @@ public class BytecodeWriter extends simpleBaseListener {
     
     @Override
     public void enterUnsignedNumber(simpleParser.UnsignedNumberContext ctx) {
-        ils.peek().append(new PUSH(_cp, Integer.parseInt(ctx.getText())));
+        String rawVar = ctx.getText();
+        if (rawVar.contains(".")) {
+            ils.peek().append(new PUSH(_cp, Double.parseDouble(rawVar)));
+        } else {
+            ils.peek().append(new PUSH(_cp, Integer.parseInt(rawVar)));
+        }
     }
     
     @Override

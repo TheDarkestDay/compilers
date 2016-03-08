@@ -1,9 +1,12 @@
 head: {
     vars: {
         x: number;
+        y: real;
     }
 }
 body: {
     x := 15+5*5-4;
     print x;
+    y := 1.5;
+    print y;
 }
