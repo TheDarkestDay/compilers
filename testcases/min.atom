@@ -6,5 +6,5 @@ head: {
 }
 body: {
     y := 1.5*4;
-    print y;
+    print 8*9;
 }

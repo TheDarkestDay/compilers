@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.regex.Pattern;
 import org.apache.bcel.*;
 import org.apache.bcel.generic.*;
 import org.apache.bcel.classfile.*;
@@ -72,28 +73,28 @@ public class BytecodeWriter extends simpleBaseListener {
     
     private void processList() {
         for (int i = 0;i<preList.size();i++) {
-            if (Pattern.matches("[a-zA-Z]+", preList[i])) {
-                String varName = preList[i];
+            if (Pattern.matches("[a-zA-Z]+", preList.get(i))) {
+                String varName = preList.get(i);
                 String varType = scp.getTypeOf(varName);
-                String varIndex = variables.peek().get(varName);
+                int varIndex = variables.peek().get(varName);
                 
                 ils.peek().append(_factory.createLoad(toBCELType(varType), varIndex));
                 if (lastExprType.toString().equals("double") && varType.equals("number")) {
                     ils.peek().append(InstructionConstants.I2D);
                 }
-            } else if (Pattern.matches("[0-9]+", preList[i])) {
-                if (preList[i].contains(".")) {
-                    ils.peek().append(new PUSH(_cp, Double.parseDouble(preList[i])));
+            } else if (Pattern.matches("[0-9]{1,13}(\\.[0-9]+)?", preList.get(i))) {
+                if (lastExprType.toString().equals("double") && !preList.get(i).contains(".")) {
+                    ils.peek().append(new PUSH(_cp, Double.parseDouble(preList.get(i)+".0")));
+                } else if (preList.get(i).contains(".")) {
+                    ils.peek().append(new PUSH(_cp, Double.parseDouble(preList.get(i))));
                 } else {
-                    ils.peek().append()
-                }
-                
-                
+                    ils.peek().append(new PUSH(_cp, Integer.parseInt(preList.get(i))));
+                }        
             } else {
                 if (lastExprType.toString().equals("double")) {
-                    processDblOp(preList[i]);
+                    processDblOp(preList.get(i));
                 } else {
-                    processIntOp(preList[i]);
+                    processIntOp(preList.get(i));
                 }
             }
         }
@@ -194,12 +195,12 @@ public class BytecodeWriter extends simpleBaseListener {
         if (leftSideOfAssign) {
             leftSideOfAssign = false;
         } else {
-     /*       String varName = ctx.identifier(0).getText();
-            String varType = scp.getTypeOf(varName);
+            String varName = ctx.identifier(0).getText();
+            String varType = scp.getTypeOf(varName); 
             if (varType.equals("real")) {
                 lastExprType = Type.DOUBLE;
             }
-            int varIndex = variables.peek().get(varName); 
+        /*    int varIndex = variables.peek().get(varName); 
             ils.peek().append(_factory.createLoad(toBCELType(varType), varIndex)); */
             
             preList.add(ctx.identifier(0).getText());
@@ -282,11 +283,16 @@ public class BytecodeWriter extends simpleBaseListener {
     }
     
     @Override
+    public void enterSimpleExpression(simpleParser.SimpleExpressionContext ctx) {
+        preList.clear();
+    }
+    
+    @Override
     public void exitSimpleExpression(simpleParser.SimpleExpressionContext ctx) {
         while (!operators.empty()) {
             preList.add(operators.pop());
         }
         
-        processExpr();
+        processList();
     }
 }
