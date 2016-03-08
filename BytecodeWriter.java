@@ -200,6 +200,9 @@ public class BytecodeWriter extends simpleBaseListener {
             if (varType.equals("real")) {
                 lastExprType = Type.DOUBLE;
             }
+            if (varType.equals("string")) {
+                lastExprType = Type.STRING;
+            }
         /*    int varIndex = variables.peek().get(varName); 
             ils.peek().append(_factory.createLoad(toBCELType(varType), varIndex)); */
             
@@ -222,22 +225,20 @@ public class BytecodeWriter extends simpleBaseListener {
     @Override
     public void enterOutput(simpleParser.OutputContext ctx) {
         lastExprType = Type.INT;
+
         ils.peek().append(_factory.createFieldAccess("java.lang.System", "out", new ObjectType("java.io.PrintStream"), Constants.GETSTATIC));
     }
     
     @Override
     public void enterString(simpleParser.StringContext ctx) {
         String literal = ctx.getText();
+        lastExprType = Type.STRING;
         ils.peek().append(new PUSH(_cp, literal));
     }
     
     
     @Override
-    public void exitOutput(simpleParser.OutputContext ctx) {
-        if (ctx.string() != null) {
-            lastExprType = Type.STRING;
-        }
-               
+    public void exitOutput(simpleParser.OutputContext ctx) {        
         ils.peek().append(_factory.createInvoke("java.io.PrintStream", "println", Type.VOID, new Type[] {lastExprType}, Constants.INVOKEVIRTUAL));
     }
     

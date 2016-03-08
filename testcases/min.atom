@@ -2,9 +2,14 @@ head: {
     vars: {
         x: number;
         y: real;
+        z: string;
     }
 }
 body: {
     y := 1.5*4;
-    print 8*9;
+    print y;
+    z := 'Hello';
+    print z;
+    print 'Hello as literal';
+    print 3+4.5;
 }
