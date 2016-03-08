@@ -14,7 +14,7 @@ public class BCELTest {
         int t = 10;
         double w = 1.5;
         String word = "Haha";
-        System.out.println(6+x*33);
+        System.out.println(6+x*33.4);
         System.out.println("Hello, world!");
         while(z > 20 || z < 100) {
             z = z + 1;
