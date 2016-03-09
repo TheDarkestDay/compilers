@@ -16,10 +16,19 @@ public class BCELTestCreator implements Constants {
   }
 
   public void create(OutputStream out) throws IOException {
+    createFields();
     createMethod_0();
     createMethod_1();
     createMethod_2();
     _cg.getJavaClass().dump(out);
+  }
+
+  private void createFields() {
+    FieldGen field;
+
+    field = new FieldGen(ACC_PUBLIC | ACC_STATIC | ACC_FINAL, Type.INT, "CONST", _cp);
+    field.setInitValue(12)
+    _cg.addField(field.getField());
   }
 
   private void createMethod_0() {
@@ -75,30 +84,35 @@ public class BCELTestCreator implements Constants {
     il.append(new PUSH(_cp, 33.4));
     il.append(InstructionConstants.DMUL);
     il.append(InstructionConstants.DADD);
+    il.append(new PUSH(_cp, 12.0));
+    il.append(InstructionConstants.DADD);
     il.append(_factory.createInvoke("java.io.PrintStream", "println", Type.VOID, new Type[] { Type.DOUBLE }, Constants.INVOKEVIRTUAL));
-    InstructionHandle ih_40 = il.append(_factory.createFieldAccess("java.lang.System", "out", new ObjectType("java.io.PrintStream"), Constants.GETSTATIC));
+    InstructionHandle ih_44 = il.append(_factory.createFieldAccess("java.lang.System", "out", new ObjectType("java.io.PrintStream"), Constants.GETSTATIC));
     il.append(new PUSH(_cp, "Hello, world!"));
     il.append(_factory.createInvoke("java.io.PrintStream", "println", Type.VOID, new Type[] { Type.STRING }, Constants.INVOKEVIRTUAL));
-    InstructionHandle ih_48 = il.append(_factory.createLoad(Type.INT, 3));
+    InstructionHandle ih_52 = il.append(_factory.createLoad(Type.INT, 3));
     il.append(new PUSH(_cp, 20));
-        BranchInstruction if_icmpgt_51 = _factory.createBranchInstruction(Constants.IF_ICMPGT, null);
-    il.append(if_icmpgt_51);
+        BranchInstruction if_icmpgt_55 = _factory.createBranchInstruction(Constants.IF_ICMPGT, null);
+    il.append(if_icmpgt_55);
     il.append(_factory.createLoad(Type.INT, 3));
     il.append(new PUSH(_cp, 100));
-        BranchInstruction if_icmpge_57 = _factory.createBranchInstruction(Constants.IF_ICMPGE, null);
-    il.append(if_icmpge_57);
-    InstructionHandle ih_60 = il.append(_factory.createLoad(Type.INT, 3));
+        BranchInstruction if_icmpge_61 = _factory.createBranchInstruction(Constants.IF_ICMPGE, null);
+    il.append(if_icmpge_61);
+    InstructionHandle ih_64 = il.append(_factory.createLoad(Type.INT, 3));
     il.append(new PUSH(_cp, 1));
     il.append(InstructionConstants.IADD);
     il.append(_factory.createStore(Type.INT, 3));
-        BranchInstruction goto_64 = _factory.createBranchInstruction(Constants.GOTO, ih_48);
-    il.append(goto_64);
-    InstructionHandle ih_67 = il.append(_factory.createFieldAccess("java.lang.System", "out", new ObjectType("java.io.PrintStream"), Constants.GETSTATIC));
+        BranchInstruction goto_68 = _factory.createBranchInstruction(Constants.GOTO, ih_52);
+    il.append(goto_68);
+    InstructionHandle ih_71 = il.append(_factory.createFieldAccess("java.lang.System", "out", new ObjectType("java.io.PrintStream"), Constants.GETSTATIC));
     il.append(new PUSH(_cp, "Hello, world!"));
     il.append(_factory.createInvoke("java.io.PrintStream", "println", Type.VOID, new Type[] { Type.STRING }, Constants.INVOKEVIRTUAL));
-    InstructionHandle ih_75 = il.append(_factory.createReturn(Type.VOID));
-    if_icmpgt_51.setTarget(ih_60);
-    if_icmpge_57.setTarget(ih_67);
+    InstructionHandle ih_79 = il.append(_factory.createFieldAccess("java.lang.System", "out", new ObjectType("java.io.PrintStream"), Constants.GETSTATIC));
+    il.append(new PUSH(_cp, 12));
+    il.append(_factory.createInvoke("java.io.PrintStream", "println", Type.VOID, new Type[] { Type.INT }, Constants.INVOKEVIRTUAL));
+    InstructionHandle ih_87 = il.append(_factory.createReturn(Type.VOID));
+    if_icmpgt_55.setTarget(ih_64);
+    if_icmpge_61.setTarget(ih_71);
     method.setMaxStack();
     method.setMaxLocals();
     _cg.addMethod(method.getMethod());

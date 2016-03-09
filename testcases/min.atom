@@ -4,6 +4,11 @@ head: {
         y: real;
         z: string;
     }
+    const: {
+        w = 20;
+        g = 2.1;
+        u = 'Blah';
+    }
 }
 body: {
     y := 1.5*4;
@@ -12,4 +17,7 @@ body: {
     print z;
     print 'Hello as literal';
     print 3+4.5;
+    print g;
+    print y+g*4;
+    print u;
 }

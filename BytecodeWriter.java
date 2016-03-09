@@ -15,6 +15,7 @@ public class BytecodeWriter extends simpleBaseListener {
     private Stack<InstructionList> ils;
     private Stack<MethodGen> methods;
     private Stack<HashMap<String, Integer>> variables;
+    private HashMap<String, String> constLiterals;
     private Stack<String> operators;
     private ArrayList<String> preList;
     private Stack<Integer> varCounters;
@@ -75,11 +76,18 @@ public class BytecodeWriter extends simpleBaseListener {
         for (int i = 0;i<preList.size();i++) {
             if (Pattern.matches("[a-zA-Z]+", preList.get(i))) {
                 String varName = preList.get(i);
-                String varType = scp.getTypeOf(varName);
-                int varIndex = variables.peek().get(varName);
+                Type varType;
                 
-                ils.peek().append(_factory.createLoad(toBCELType(varType), varIndex));
-                if (lastExprType.toString().equals("double") && varType.equals("number")) {
+                if (scp.getTypeOf(varName).equals("constant")) {
+                    ils.peek().append(_factory.createFieldAccess("Program", varName, getTypeFromLiteral(constLiterals.get(varName)), Constants.GETSTATIC));
+                    varType = getTypeFromLiteral(constLiterals.get(varName));
+                } else {
+                    int varIndex = variables.peek().get(varName);
+                    varType = toBCELType(scp.getTypeOf(varName));
+                    ils.peek().append(_factory.createLoad(varType, varIndex));
+                }
+                
+                if (lastExprType.toString().equals("double") && varType == Type.INT) {
                     ils.peek().append(InstructionConstants.I2D);
                 }
             } else if (Pattern.matches("[0-9]{1,13}(\\.[0-9]+)?", preList.get(i))) {
@@ -97,6 +105,16 @@ public class BytecodeWriter extends simpleBaseListener {
                     processIntOp(preList.get(i));
                 }
             }
+        }
+    }
+    
+    private Type getTypeFromLiteral(String literal) {
+        if (Pattern.matches("[a-zA-Z]+", literal)) {
+            return Type.STRING;
+        } else if (Pattern.matches("[0-9]+", literal)) {
+            return Type.INT;
+        } else {
+            return Type.DOUBLE;
         }
     }
     
@@ -124,6 +142,7 @@ public class BytecodeWriter extends simpleBaseListener {
         ils = new Stack<InstructionList>();
         methods = new Stack<MethodGen>();
         variables = new Stack<HashMap<String, Integer>>();
+        constLiterals = new HashMap<String, String>();
         operators = new Stack<String>();
         varCounters = new Stack<Integer>();
         operands = new Stack<String>();
@@ -203,6 +222,9 @@ public class BytecodeWriter extends simpleBaseListener {
             if (varType.equals("string")) {
                 lastExprType = Type.STRING;
             }
+            if (varType.equals("constant")) {
+                lastExprType = getTypeFromLiteral(constLiterals.get(ctx.getText()));
+            }
         /*    int varIndex = variables.peek().get(varName); 
             ils.peek().append(_factory.createLoad(toBCELType(varType), varIndex)); */
             
@@ -231,7 +253,7 @@ public class BytecodeWriter extends simpleBaseListener {
     
     @Override
     public void enterString(simpleParser.StringContext ctx) {
-        String literal = ctx.getText();
+        String literal = ctx.getText().replaceAll("'","");
         lastExprType = Type.STRING;
         ils.peek().append(new PUSH(_cp, literal));
     }
@@ -289,11 +311,38 @@ public class BytecodeWriter extends simpleBaseListener {
     }
     
     @Override
+    public void enterConstDefinition(simpleParser.ConstDefinitionContext ctx) {
+        FieldGen field;
+        
+        String rawConst = ctx.constant().getText().replaceAll("'","");
+        String constName = ctx.identifier().getText();
+        Type tp = getTypeFromLiteral(rawConst);
+        constLiterals.put(constName, rawConst);
+        
+        field = new FieldGen(ACC_PUBLIC | ACC_STATIC | ACC_FINAL, tp, constName, _cp);
+        
+        switch(tp.toString()) {
+            case "int":
+                field.setInitValue(Integer.parseInt(rawConst));
+                break;
+            case "double":
+                field.setInitValue(Double.parseDouble(rawConst));
+                break;
+            default:
+                field.setInitValue(rawConst);
+        }
+        
+        _cg.addField(field.getField());
+    }
+    
+    @Override
     public void exitSimpleExpression(simpleParser.SimpleExpressionContext ctx) {
         while (!operators.empty()) {
             preList.add(operators.pop());
         }
         
-        processList();
+        if (!lastExprType.toString().equals("string")) {
+           processList(); 
+        }
     }
 }
