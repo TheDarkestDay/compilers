@@ -105,7 +105,7 @@ returnStatement
     ;
     
 statementSequence
-    : (statement SEMI)*
+    : ((statement | compoundStatement) SEMI)*
     ;
     
 statement

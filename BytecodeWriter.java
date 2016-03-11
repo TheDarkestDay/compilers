@@ -23,6 +23,7 @@ public class BytecodeWriter extends simpleBaseListener {
     private Scope scp;
     private Stack<BranchInstruction> ifsToTargetOutside;
     private Stack<Boolean> isInside;
+    private int subcodeEndIndex;
     
     boolean leftSideOfAssign;
     Type lastExprType;
@@ -151,6 +152,7 @@ public class BytecodeWriter extends simpleBaseListener {
         preList = new ArrayList<String>();
         ifsToTargetOutside = new Stack<BranchInstruction>();
         isInside = new Stack<Boolean>();
+        isInside.push(true);
         varCounters.push(0);
     }
     
@@ -350,10 +352,11 @@ public class BytecodeWriter extends simpleBaseListener {
         }
     }
     
+    
     @Override
     public void exitExpressionBlock(simpleParser.ExpressionBlockContext ctx) {
-        if (ctx.logop() == null) {
-            String relOp = ctx.relop.getText();
+    //    if (ctx.simpleExpression == null) {
+            String relOp = ctx.relop().getText();
             
             switch(relOp) {
                 case ">":
@@ -377,17 +380,28 @@ public class BytecodeWriter extends simpleBaseListener {
             }
             
             ils.peek().append(ifsToTargetOutside.peek());
-        }
+    //    }
     }
     
     @Override
-    public void enterCompoundStatement(simpleParser.CompoundStatementContext ctx) {
+    public void enterSubCode(simpleParser.SubCodeContext ctx) {
         isInside.push(true);
+    }
+    
+    
+    @Override
+    public void exitSubCode(simpleParser.SubCodeContext ctx) {
+        isInside.pop();
+        isInside.push(false);
+        subcodeEndIndex = ils.peek().getLength()-1;
     }
     
     @Override
     public void exitStatement(simpleParser.StatementContext ctx) {
-        
+        if (!isInside.peek()) {
+            ifsToTargetOutside.peek().setTarget(ils.peek().getInstructionHandles()[subcodeEndIndex+1]);
+            isInside.pop();
+        }
     }
     
     
