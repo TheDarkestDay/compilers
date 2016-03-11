@@ -21,6 +21,8 @@ public class BytecodeWriter extends simpleBaseListener {
     private Stack<Integer> varCounters;
     private Stack<String> operands;
     private Scope scp;
+    private Stack<BranchInstruction> ifsToTargetOutside;
+    private Stack<Boolean> isInside;
     
     boolean leftSideOfAssign;
     Type lastExprType;
@@ -147,6 +149,8 @@ public class BytecodeWriter extends simpleBaseListener {
         varCounters = new Stack<Integer>();
         operands = new Stack<String>();
         preList = new ArrayList<String>();
+        ifsToTargetOutside = new Stack<BranchInstruction>();
+        isInside = new Stack<Boolean>();
         varCounters.push(0);
     }
     
@@ -345,4 +349,46 @@ public class BytecodeWriter extends simpleBaseListener {
            processList(); 
         }
     }
+    
+    @Override
+    public void exitExpressionBlock(simpleParser.ExpressionBlockContext ctx) {
+        if (ctx.logop() == null) {
+            String relOp = ctx.relop.getText();
+            
+            switch(relOp) {
+                case ">":
+                    ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPLE, null));
+                    break;
+                case "<":
+                    ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPGE, null));
+                    break;
+                case ">=":
+                    ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPLT, null));
+                    break;
+                case "<=":
+                    ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPGT, null));
+                    break;
+                case "=":
+                    ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPNE, null));
+                    break;
+                case "!=":
+                    ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPEQ, null));
+                    break;
+            }
+            
+            ils.peek().append(ifsToTargetOutside.peek());
+        }
+    }
+    
+    @Override
+    public void enterCompoundStatement(simpleParser.CompoundStatementContext ctx) {
+        isInside.push(true);
+    }
+    
+    @Override
+    public void exitStatement(simpleParser.StatementContext ctx) {
+        
+    }
+    
+    
 }

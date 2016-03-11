@@ -105,7 +105,7 @@ returnStatement
     ;
     
 statementSequence
-    : ((statement | compStatement) SEMI)*
+    : (statement SEMI)*
     ;
     
 statement
@@ -115,21 +115,21 @@ statement
     | functionCall
     ;
     
-compStatement
+compoundStatement
     : condition
     | loop
     ;
         
 loop
-    : WHILE expression RCURL statementSequence LCURL
+    : WHILE expression RCURL subCode LCURL
     ;
     
 condition
-    : IF expression RCURL statementSequence LCURL (elseBranch)?
+    : IF expression RCURL subCode LCURL
     ;
     
-elseBranch
-    : ELSE RCURL statementSequence LCURL
+subCode
+    : statementSequence
     ;
     
 input
@@ -145,7 +145,11 @@ assign
     ;
     
 expression
-    : simpleExpression relop simpleExpression (logop expression)*
+    : expressionBlock (logop expressionBlock)*
+    ;
+    
+expressionBlock
+    : simpleExpression relop simpleExpression
     ;
     
 logop
@@ -260,9 +264,6 @@ IF
     : I F
     ;
     
-ELSE
-    : E L S E
-    ;
     
 NUMBER
     : N U M B E R

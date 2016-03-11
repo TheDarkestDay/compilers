@@ -154,11 +154,11 @@ public interface simpleVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(simpleParser.StatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link simpleParser#compStatement}.
+	 * Visit a parse tree produced by {@link simpleParser#compoundStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCompStatement(simpleParser.CompStatementContext ctx);
+	T visitCompoundStatement(simpleParser.CompoundStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link simpleParser#loop}.
 	 * @param ctx the parse tree
@@ -172,11 +172,11 @@ public interface simpleVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCondition(simpleParser.ConditionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link simpleParser#elseBranch}.
+	 * Visit a parse tree produced by {@link simpleParser#subCode}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitElseBranch(simpleParser.ElseBranchContext ctx);
+	T visitSubCode(simpleParser.SubCodeContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link simpleParser#input}.
 	 * @param ctx the parse tree
@@ -201,6 +201,12 @@ public interface simpleVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExpression(simpleParser.ExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link simpleParser#expressionBlock}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpressionBlock(simpleParser.ExpressionBlockContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link simpleParser#logop}.
 	 * @param ctx the parse tree
