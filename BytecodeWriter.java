@@ -18,12 +18,15 @@ public class BytecodeWriter extends simpleBaseListener {
     private HashMap<String, String> constLiterals;
     private Stack<String> operators;
     private ArrayList<String> preList;
+    private ArrayList<Integer> branchIndexes;
     private Stack<Integer> varCounters;
     private Stack<String> operands;
     private Scope scp;
     private Stack<BranchInstruction> ifsToTargetOutside;
+    private Stack<BranchInstruction> ifsToTargetInside;
     private Stack<Boolean> isInside;
     private int subcodeEndIndex;
+    private BranchInstruction ifToTargetNear;
     
     boolean leftSideOfAssign;
     Type lastExprType;
@@ -151,7 +154,10 @@ public class BytecodeWriter extends simpleBaseListener {
         operands = new Stack<String>();
         preList = new ArrayList<String>();
         ifsToTargetOutside = new Stack<BranchInstruction>();
+        ifsToTargetInside = new Stack<BranchInstruction>();
         isInside = new Stack<Boolean>();
+        ifToTargetNear = null;
+        branchIndexes = new ArrayList<Integer>();
         isInside.push(true);
         varCounters.push(0);
     }
@@ -231,8 +237,6 @@ public class BytecodeWriter extends simpleBaseListener {
             if (varType.equals("constant")) {
                 lastExprType = getTypeFromLiteral(constLiterals.get(ctx.getText()));
             }
-        /*    int varIndex = variables.peek().get(varName); 
-            ils.peek().append(_factory.createLoad(toBCELType(varType), varIndex)); */
             
             preList.add(ctx.identifier(0).getText());
         }
@@ -242,6 +246,10 @@ public class BytecodeWriter extends simpleBaseListener {
     public void exitProgram(simpleParser.ProgramContext ctx) {
         InstructionList il = ils.peek();
         MethodGen method = methods.peek();
+        
+       /* for (int i=0;i<ils.peek().getLength();i++) {
+            System.out.println(ils.peek().getInstructionHandles()[i]);
+        } */
         
         il.append(_factory.createReturn(Type.VOID));
         method.setMaxStack();
@@ -380,8 +388,25 @@ public class BytecodeWriter extends simpleBaseListener {
             }
             
             ils.peek().append(ifsToTargetOutside.peek());
-            ifsToTargetOutside.pop();
+            branchIndexes.add(ils.peek().getLength()-1);
+        
+            if (ifToTargetNear != null) {
+                ifToTargetNear.setTarget(ils.peek().getEnd());
+            }
+         //   ifsToTargetOutside.pop();
     //    }
+    }
+    
+    @Override
+    public void enterLogop(simpleParser.LogopContext ctx) {
+        String op = ctx.getText();
+        
+        if (op.equals("and")) {
+            ifToTargetNear = ifsToTargetOutside.pop();
+        } else {
+            ifsToTargetInside.push(ifsToTargetOutside.pop());
+            ifToTargetNear = null;
+        }
     }
     
     @Override
@@ -402,6 +427,11 @@ public class BytecodeWriter extends simpleBaseListener {
         if (!isInside.peek()) {
             ifsToTargetOutside.peek().setTarget(ils.peek().getInstructionHandles()[subcodeEndIndex+1]);
             isInside.pop();
+        }
+        
+        while(!ifsToTargetInside.empty()) {
+            ifsToTargetInside.peek().setTarget(ils.peek().getEnd());
+            ifsToTargetInside.pop();
         }
     }
     
@@ -431,12 +461,21 @@ public class BytecodeWriter extends simpleBaseListener {
         }
         
         try {
-           ils.peek().delete(ils.peek().getEnd()); 
+            if (ifToTargetNear != null)
+                ifToTargetNear.setTarget(null);
+            ils.peek().delete(ils.peek().getEnd());
         } catch (TargetLostException e) {
-            System.out.println(e);
+            System.out.println("Caught");
         }
         
         ils.peek().append(ifsToTargetOutside.peek());
+    
+        if (ifToTargetNear != null) {
+            int preLastBranchIndex = branchIndexes.get(branchIndexes.size()-2);
+            ifToTargetNear.setTarget(ils.peek().getInstructionHandles()[preLastBranchIndex+1]);
+        }
+        
+        branchIndexes.clear();
     }
     
     

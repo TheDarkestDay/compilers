@@ -21,7 +21,7 @@ body: {
     print g;
     print y+g*4;
     print u;
-    if x*8 > 5 {
+    if x*99>5 {
         print 'Condition is true';
     };
     z := 'Test';
