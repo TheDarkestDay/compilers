@@ -430,7 +430,8 @@ public class BytecodeWriter extends simpleBaseListener {
         }
         
         while(!ifsToTargetInside.empty()) {
-            ifsToTargetInside.peek().setTarget(ils.peek().getEnd());
+            int lastBranchIndex = branchIndexes.get(branchIndexes.size()-1);
+            ifsToTargetInside.peek().setTarget(ils.peek().getInstructionHandles()[lastBranchIndex+1]);
             ifsToTargetInside.pop();
         }
     }
@@ -475,7 +476,7 @@ public class BytecodeWriter extends simpleBaseListener {
             ifToTargetNear.setTarget(ils.peek().getInstructionHandles()[preLastBranchIndex+1]);
         }
         
-        branchIndexes.clear();
+      //  branchIndexes.clear();
     }
     
     
