@@ -360,26 +360,27 @@ public class BytecodeWriter extends simpleBaseListener {
             
             switch(relOp) {
                 case ">":
-                    ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPLE, null));
-                    break;
-                case "<":
-                    ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPGE, null));
-                    break;
-                case ">=":
-                    ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPLT, null));
-                    break;
-                case "<=":
                     ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPGT, null));
                     break;
+                case "<":
+                    ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPLT, null));
+                    break;
+                case ">=":
+                    ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPGE, null));
+                    break;
+                case "<=":
+                    ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPLE, null));
+                    break;
                 case "=":
-                    ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPNE, null));
+                    ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPEQ, null));
                     break;
                 case "!=":
-                    ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPEQ, null));
+                    ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPNE, null));
                     break;
             }
             
             ils.peek().append(ifsToTargetOutside.peek());
+            ifsToTargetOutside.pop();
     //    }
     }
     
@@ -402,6 +403,40 @@ public class BytecodeWriter extends simpleBaseListener {
             ifsToTargetOutside.peek().setTarget(ils.peek().getInstructionHandles()[subcodeEndIndex+1]);
             isInside.pop();
         }
+    }
+    
+    @Override
+    public void exitExpression(simpleParser.ExpressionContext ctx) {
+        String branchIns = ils.peek().getEnd().getInstruction().getName().toUpperCase();
+        
+        switch(branchIns) {
+            case "IF_ICMPLE":
+                ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPGT, null));
+                break;
+            case "IF_CMPGE":
+                ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPLT, null));
+                break;
+            case "IF_ICMPGT":
+                ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPLE, null));
+                break;
+            case "IF_ICMPLT":
+                ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPGE, null));
+                break;
+            case "IF_ICMPEQ":
+                ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPNE, null));
+                break;
+            case "IF_ICMPNE":
+                ifsToTargetOutside.push(_factory.createBranchInstruction(Constants.IF_ICMPEQ, null));
+                break;
+        }
+        
+        try {
+           ils.peek().delete(ils.peek().getEnd()); 
+        } catch (TargetLostException e) {
+            System.out.println(e);
+        }
+        
+        ils.peek().append(ifsToTargetOutside.peek());
     }
     
     
