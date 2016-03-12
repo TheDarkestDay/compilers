@@ -24,6 +24,7 @@ public class BytecodeWriter extends simpleBaseListener {
     private Scope scp;
     private Stack<BranchInstruction> ifsToTargetOutside;
     private Stack<BranchInstruction> ifsToTargetInside;
+    private Stack<Integer> loopStartIndexes;
     private Stack<Boolean> isInside;
     private int subcodeEndIndex;
     private BranchInstruction ifToTargetNear;
@@ -156,6 +157,7 @@ public class BytecodeWriter extends simpleBaseListener {
         ifsToTargetOutside = new Stack<BranchInstruction>();
         ifsToTargetInside = new Stack<BranchInstruction>();
         isInside = new Stack<Boolean>();
+        loopStartIndexes = new Stack<Integer>();
         ifToTargetNear = null;
         branchIndexes = new ArrayList<Integer>();
         isInside.push(true);
@@ -425,7 +427,11 @@ public class BytecodeWriter extends simpleBaseListener {
     @Override
     public void exitStatement(simpleParser.StatementContext ctx) {
         if (!isInside.peek()) {
-            ifsToTargetOutside.peek().setTarget(ils.peek().getInstructionHandles()[subcodeEndIndex+1]);
+            if (ils.peek().getInstructionHandles()[subcodeEndIndex+1].toString().contains("goto")) {
+                ifsToTargetOutside.peek().setTarget(ils.peek().getInstructionHandles()[subcodeEndIndex+2]);
+            } else {
+                ifsToTargetOutside.peek().setTarget(ils.peek().getInstructionHandles()[subcodeEndIndex+1]);
+            }
             isInside.pop();
         }
         
@@ -475,8 +481,24 @@ public class BytecodeWriter extends simpleBaseListener {
             int preLastBranchIndex = branchIndexes.get(branchIndexes.size()-2);
             ifToTargetNear.setTarget(ils.peek().getInstructionHandles()[preLastBranchIndex+1]);
         }
-        
+            
       //  branchIndexes.clear();
+    }
+    
+    @Override
+    public void enterLoop(simpleParser.LoopContext ctx) {
+        loopStartIndexes.push(ils.peek().getLength());
+    }
+    
+    @Override
+    public void exitLoop(simpleParser.LoopContext ctx) {
+        int labelForGoTo = loopStartIndexes.pop();
+        ils.peek().append(_factory.createBranchInstruction(Constants.GOTO, ils.peek().getInstructionHandles()[labelForGoTo]));
+        
+        /*for (int i=0;i<ils.peek().getLength();i++) {
+            System.out.println(ils.peek().getInstructionHandles()[i]);
+        }*/
+        
     }
     
     
