@@ -21,6 +21,7 @@ public class BytecodeWriter extends simpleBaseListener {
     private ArrayList<Integer> branchIndexes;
     private Stack<Integer> varCounters;
     private Stack<String> operands;
+    private Stack<Integer> listStartIndexes;
     private Scope scp;
     private Stack<BranchInstruction> ifsToTargetOutside;
     private Stack<BranchInstruction> ifsToTargetInside;
@@ -28,6 +29,7 @@ public class BytecodeWriter extends simpleBaseListener {
     private Stack<Boolean> isInside;
     private int subcodeEndIndex;
     private BranchInstruction ifToTargetNear;
+    private String lastArrayName;
     
     boolean leftSideOfAssign;
     Type lastExprType;
@@ -158,6 +160,7 @@ public class BytecodeWriter extends simpleBaseListener {
         ifsToTargetInside = new Stack<BranchInstruction>();
         isInside = new Stack<Boolean>();
         loopStartIndexes = new Stack<Integer>();
+        listStartIndexes = new Stack<Integer>();
         ifToTargetNear = null;
         branchIndexes = new ArrayList<Integer>();
         isInside.push(true);
@@ -215,6 +218,15 @@ public class BytecodeWriter extends simpleBaseListener {
             case "real":
                 ils.peek().append(_factory.createStore(Type.DOUBLE, varIndex));
                 break;
+            case "array of number":
+                ils.peek().append(InstructionConstants.IASTORE);
+                break;
+            case "array of real":
+                ils.peek().append(InstructionConstants.DASTORE);
+                break;
+            case "array of string":
+                ils.peek().append(InstructionConstants.AASTORE);
+                break;
         }
     }
     
@@ -227,20 +239,45 @@ public class BytecodeWriter extends simpleBaseListener {
     public void exitVariable(simpleParser.VariableContext ctx) {
         if (leftSideOfAssign) {
             leftSideOfAssign = false;
+            
+            String leftVarName = ctx.identifier().getText();
+            String leftVarType = scp.getTypeOf(leftVarName);
+        
+            if (leftVarType.contains("array")) {
+                ils.peek().append(_factory.createLoad(Type.OBJECT, variables.peek().get(leftVarName)));
+            }
         } else {
             String varName = ctx.identifier(0).getText();
             String varType = scp.getTypeOf(varName); 
-            if (varType.equals("real")) {
+            if (varType.contains("real")) {
                 lastExprType = Type.DOUBLE;
             }
-            if (varType.equals("string")) {
+            if (varType.contains("string")) {
                 lastExprType = Type.STRING;
             }
-            if (varType.equals("constant")) {
+            if (varType.contains("constant")) {
                 lastExprType = getTypeFromLiteral(constLiterals.get(ctx.getText()));
             }
             
+            if (varType.contains("array")) {
+                lastArrayName = varName;
+            }
+            
             preList.add(ctx.identifier(0).getText());
+        }
+    }
+    
+    @Override
+    public void exitArrayIndex(simpleParser.ArrayIndexContext ctx) {
+        if (!leftSideOfAssign) {
+            String lastArrType = scp.getTypeOf(lastArrayName);
+            if (lastArrType.contains("number")) {
+                ils.peek().append(InstructionConstants.IALOAD);
+            } else if (lastArrType.contains("real")) {
+                ils.peek().append(InstructionConstants.DALOAD);
+            } else {
+                ils.peek().append(InstructionConstants.AALOAD);
+            }
         }
     }
     
@@ -323,7 +360,7 @@ public class BytecodeWriter extends simpleBaseListener {
     
     @Override
     public void enterSimpleExpression(simpleParser.SimpleExpressionContext ctx) {
-        preList.clear();
+        listStartIndexes.push(preList.size());
     }
     
     @Override
@@ -353,11 +390,13 @@ public class BytecodeWriter extends simpleBaseListener {
     
     @Override
     public void exitSimpleExpression(simpleParser.SimpleExpressionContext ctx) {
-        while (!operators.empty()) {
+        while (operators.size() != listStartIndexes.peek()) {
             preList.add(operators.pop());
         }
         
-        if (!lastExprType.toString().equals("string")) {
+        listStartIndexes.pop();
+        
+        if (!lastExprType.toString().equals("string") && !listStartIndexes.size()) {
            processList(); 
         }
     }
@@ -501,5 +540,27 @@ public class BytecodeWriter extends simpleBaseListener {
         
     }
     
+    @Override
+    public void enterArrayDefinition(ArrayDefinitionContext ctx) {
+        int size = Integer.parseInt(ctx.NUM_INT().getText());
+        int varIndex = varCounters.pop();
+        String type = scp.getTypeOf(ctx.identifier().getText());
+        
+        ils.peek().append(new PUSH(_cp, size));
+        if (type.contains("number")) {
+            Type tp = Type.INT;
+        } else if (type.contains("real")) {
+            Type tp = Type.DOUBLE;
+        } else if (type.contains("string")) {
+            Type tp = Type.STRING;
+        }
+        
+        
+        ils.peek().append(_factory.createNewArray(tp, (short) 1));
+        varIndex++;
+        ils.peek().append(_factory.createStore(Type.OBJECT, varIndex));
+        varCounters.push(varIndex);
+        variables.peek().put(ctx.identifier().getText(), varIndex);
+    }
     
 }

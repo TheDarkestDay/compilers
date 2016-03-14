@@ -207,6 +207,16 @@ public interface simpleListener extends ParseTreeListener {
 	 */
 	void exitVariable(simpleParser.VariableContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link simpleParser#arrayIndex}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayIndex(simpleParser.ArrayIndexContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link simpleParser#arrayIndex}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayIndex(simpleParser.ArrayIndexContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link simpleParser#code}.
 	 * @param ctx the parse tree
 	 */

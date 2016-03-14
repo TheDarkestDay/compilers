@@ -93,7 +93,11 @@ args
     ;
 
 variable
-    : identifier (RBRACK simpleExpression LBRACK | DOT identifier )?
+    : identifier (arrayIndex | DOT identifier )?
+    ;
+    
+arrayIndex
+    : RBRACK simpleExpression LBRACK
     ;
     
 code

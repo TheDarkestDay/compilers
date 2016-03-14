@@ -255,6 +255,18 @@ public class simpleBaseListener implements simpleListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterArrayIndex(simpleParser.ArrayIndexContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArrayIndex(simpleParser.ArrayIndexContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterCode(simpleParser.CodeContext ctx) { }
 	/**
 	 * {@inheritDoc}
