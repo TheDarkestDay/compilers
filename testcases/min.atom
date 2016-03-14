@@ -3,6 +3,7 @@ head: {
         x: number;
         y: real;
         z: string;
+        collection arr of 5:number;
     }
     const: {
         g = 20;
@@ -19,4 +20,7 @@ body: {
     print 'Hello as literal';
     print 3+4.5*g;
     print h;
+    print 3+4*g;
+    arr[0] := 5;
+    print arr[0];
 }

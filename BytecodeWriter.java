@@ -255,20 +255,25 @@ public class BytecodeWriter extends simpleBaseListener {
     @Override
     public void enterAssign(simpleParser.AssignContext ctx) {
         leftSideOfAssign = true;
+        
+        String leftVarName = ctx.variable().getText();
+        if (leftVarName.contains("[")) {
+            leftVarName = leftVarName.substring(0,leftVarName.indexOf("["));
+            
+            ils.peek().append(_factory.createLoad(Type.OBJECT, variables.peek().get(leftVarName)));
+        }
     }
     
     @Override
     public void exitVariable(simpleParser.VariableContext ctx) {
         if (leftSideOfAssign) {
             leftSideOfAssign = false;
-            
-            String leftVarName = ctx.identifier(0).getText();
-            String leftVarType = scp.getTypeOf(leftVarName);
-        
-            if (leftVarType.contains("array")) {
-                ils.peek().append(_factory.createLoad(Type.OBJECT, variables.peek().get(leftVarName)));
-            }
-        } else {
+        }
+    }
+    
+    @Override
+    public void enterVariable(simpleParser.VariableContext ctx) {
+        if (!leftSideOfAssign) {
             String varName = ctx.identifier(0).getText();
             String varType = scp.getTypeOf(varName); 
             if (varType.contains("real")) {
