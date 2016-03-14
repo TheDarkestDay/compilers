@@ -1,0 +1,98 @@
+Compiled from "BCELTest.java"
+public class BCELTest {
+  public static final int CONST;
+
+  public BCELTest();
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+       4: return
+
+  public static double greet(int, double);
+    Code:
+       0: iconst_1
+       1: istore_3
+       2: iload_0
+       3: i2d
+       4: dload_1
+       5: dmul
+       6: ldc2_w        #2                  // double 3.0d
+       9: dadd
+      10: dreturn
+
+  public static void main(java.lang.String[]);
+    Code:
+       0: iconst_2
+       1: ldc2_w        #4                  // double 3.4d
+       4: invokestatic  #6                  // Method greet:(ID)D
+       7: dstore_1
+       8: iconst_4
+       9: istore        4
+      11: bipush        8
+      13: istore        5
+      15: bipush        10
+      17: istore        6
+      19: bipush        10
+      21: newarray       int
+      23: astore        7
+      25: bipush        25
+      27: newarray       int
+      29: astore        8
+      31: bipush        21
+      33: newarray       double
+      35: astore        9
+      37: bipush        12
+      39: anewarray     #7                  // class java/lang/String
+      42: astore        10
+      44: aload         7
+      46: iconst_1
+      47: bipush        15
+      49: iastore
+      50: ldc2_w        #8                  // double 1.5d
+      53: aload         7
+      55: iconst_1
+      56: iaload
+      57: i2d
+      58: dmul
+      59: dstore        11
+      61: aload         9
+      63: iconst_1
+      64: ldc2_w        #10                 // double 2.1d
+      67: dastore
+      68: aload         10
+      70: iconst_1
+      71: ldc           #12                 // String Blah
+      73: aastore
+      74: ldc           #13                 // String Haha
+      76: astore        13
+      78: getstatic     #14                 // Field java/lang/System.out:Ljava/io/PrintStream;
+      81: ldc2_w        #15                 // double 6.0d
+      84: dload_1
+      85: ldc2_w        #17                 // double 33.4d
+      88: dmul
+      89: dadd
+      90: ldc2_w        #20                 // double 12.0d
+      93: dadd
+      94: invokevirtual #22                 // Method java/io/PrintStream.println:(D)V
+      97: getstatic     #14                 // Field java/lang/System.out:Ljava/io/PrintStream;
+     100: ldc           #23                 // String Hello, world!
+     102: invokevirtual #24                 // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+     105: iload         4
+     107: bipush        20
+     109: if_icmpgt     119
+     112: iload         4
+     114: bipush        100
+     116: if_icmpge     128
+     119: iload         4
+     121: iconst_1
+     122: iadd
+     123: istore        4
+     125: goto          105
+     128: getstatic     #14                 // Field java/lang/System.out:Ljava/io/PrintStream;
+     131: ldc           #23                 // String Hello, world!
+     133: invokevirtual #24                 // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+     136: getstatic     #14                 // Field java/lang/System.out:Ljava/io/PrintStream;
+     139: bipush        12
+     141: invokevirtual #25                 // Method java/io/PrintStream.println:(I)V
+     144: return
+}

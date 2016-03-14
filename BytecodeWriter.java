@@ -69,7 +69,20 @@ public class BytecodeWriter extends simpleBaseListener {
         }
     }
     
+    private void processLoad(String loadIns) {
+        if (loadIns.equals("<AALOAD>")) {
+            ils.peek().append(InstructionConstants.AALOAD);
+        } else if (loadIns.equals("<IALOAD>")) {
+            ils.peek().append(InstructionConstants.IALOAD);
+        } else {
+            ils.peek().append(InstructionConstants.DALOAD);
+        }
+    }
+    
     private Type toBCELType(String tp) {
+        if (tp.contains("array")) {
+            tp = tp.substring(0,9);
+        }
         switch(tp) {
             case "number":
                 return Type.INT;
@@ -90,6 +103,10 @@ public class BytecodeWriter extends simpleBaseListener {
                 if (scp.getTypeOf(varName).equals("constant")) {
                     ils.peek().append(_factory.createFieldAccess("Program", varName, getTypeFromLiteral(constLiterals.get(varName)), Constants.GETSTATIC));
                     varType = getTypeFromLiteral(constLiterals.get(varName));
+                } else if (scp.getTypeOf(varName).contains("array")) {
+                    int arrIndex = variables.peek().get(varName);
+                    varType = toBCELType(scp.getTypeOf(varName));
+                    ils.peek().append(_factory.createLoad(Type.OBJECT, arrIndex));
                 } else {
                     int varIndex = variables.peek().get(varName);
                     varType = toBCELType(scp.getTypeOf(varName));
@@ -107,6 +124,8 @@ public class BytecodeWriter extends simpleBaseListener {
                 } else {
                     ils.peek().append(new PUSH(_cp, Integer.parseInt(preList.get(i))));
                 }        
+            } else if (preList.get(i).contains("LOAD")) {
+                processLoad(preList.get(i));
             } else {
                 if (lastExprType.toString().equals("double")) {
                     processDblOp(preList.get(i));
@@ -205,6 +224,9 @@ public class BytecodeWriter extends simpleBaseListener {
     @Override
     public void exitAssign(simpleParser.AssignContext ctx) {
         String name = ctx.variable().getText();
+        if (name.contains("[")) {
+            name = name.substring(0,name.indexOf("["));
+        }
         int varIndex = variables.peek().get(name);
         String varType = scp.getTypeOf(name);
         
@@ -240,7 +262,7 @@ public class BytecodeWriter extends simpleBaseListener {
         if (leftSideOfAssign) {
             leftSideOfAssign = false;
             
-            String leftVarName = ctx.identifier().getText();
+            String leftVarName = ctx.identifier(0).getText();
             String leftVarType = scp.getTypeOf(leftVarName);
         
             if (leftVarType.contains("array")) {
@@ -256,7 +278,11 @@ public class BytecodeWriter extends simpleBaseListener {
                 lastExprType = Type.STRING;
             }
             if (varType.contains("constant")) {
-                lastExprType = getTypeFromLiteral(constLiterals.get(ctx.getText()));
+                if (getTypeFromLiteral(constLiterals.get(ctx.getText())) == Type.DOUBLE) {
+                    lastExprType = Type.DOUBLE;
+                } else if (getTypeFromLiteral(constLiterals.get(ctx.getText())) == Type.STRING) {
+                    lastExprType = Type.STRING;
+                };
             }
             
             if (varType.contains("array")) {
@@ -272,11 +298,11 @@ public class BytecodeWriter extends simpleBaseListener {
         if (!leftSideOfAssign) {
             String lastArrType = scp.getTypeOf(lastArrayName);
             if (lastArrType.contains("number")) {
-                ils.peek().append(InstructionConstants.IALOAD);
+                preList.add("<IALOAD>");
             } else if (lastArrType.contains("real")) {
-                ils.peek().append(InstructionConstants.DALOAD);
+                preList.add("<DALOAD>");
             } else {
-                ils.peek().append(InstructionConstants.AALOAD);
+                preList.add("<AALOAD>");
             }
         }
     }
@@ -360,7 +386,10 @@ public class BytecodeWriter extends simpleBaseListener {
     
     @Override
     public void enterSimpleExpression(simpleParser.SimpleExpressionContext ctx) {
-        listStartIndexes.push(preList.size());
+        if (listStartIndexes.empty()) {
+            lastExprType = Type.INT;
+        }
+        listStartIndexes.push(operators.size());
     }
     
     @Override
@@ -371,6 +400,10 @@ public class BytecodeWriter extends simpleBaseListener {
         String constName = ctx.identifier().getText();
         Type tp = getTypeFromLiteral(rawConst);
         constLiterals.put(constName, rawConst);
+        
+        System.out.println(rawConst);
+        System.out.println(constName);
+        System.out.println(tp);
         
         field = new FieldGen(ACC_PUBLIC | ACC_STATIC | ACC_FINAL, tp, constName, _cp);
         
@@ -396,8 +429,9 @@ public class BytecodeWriter extends simpleBaseListener {
         
         listStartIndexes.pop();
         
-        if (!lastExprType.toString().equals("string") && !listStartIndexes.size()) {
-           processList(); 
+        if (!lastExprType.toString().equals("string") && listStartIndexes.size() == 0) {
+            processList();
+            preList.clear();
         }
     }
     
@@ -541,18 +575,17 @@ public class BytecodeWriter extends simpleBaseListener {
     }
     
     @Override
-    public void enterArrayDefinition(ArrayDefinitionContext ctx) {
+    public void enterArrayDefinition(simpleParser.ArrayDefinitionContext ctx) {
         int size = Integer.parseInt(ctx.NUM_INT().getText());
         int varIndex = varCounters.pop();
         String type = scp.getTypeOf(ctx.identifier().getText());
+        Type tp = Type.INT;
         
         ils.peek().append(new PUSH(_cp, size));
-        if (type.contains("number")) {
-            Type tp = Type.INT;
-        } else if (type.contains("real")) {
-            Type tp = Type.DOUBLE;
+        if (type.contains("real")) {
+            tp = Type.DOUBLE;
         } else if (type.contains("string")) {
-            Type tp = Type.STRING;
+            tp = Type.STRING;
         }
         
         

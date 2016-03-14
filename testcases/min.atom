@@ -5,9 +5,9 @@ head: {
         z: string;
     }
     const: {
-        w = 20;
-        g = 2.1;
-        u = 'Blah';
+        g = 20;
+        h = 'Blah';
+        z = 3.15;
     }
 }
 body: {
@@ -17,13 +17,6 @@ body: {
     z := 'Hello';
     print z;
     print 'Hello as literal';
-    print 3+4.5;
-    print g;
-    print y+g*4;
-    print u;
-    while x<=5 {
-        print x;
-        x := x + 1;
-    };
-    z := 'Test';
+    print 3+4.5*g;
+    print h;
 }
