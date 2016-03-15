@@ -81,17 +81,16 @@ public class BytecodeWriter extends simpleBaseListener {
     
     private Type toBCELType(String tp) {
         if (tp.contains("array")) {
-            tp = tp.substring(0,9);
+            tp = tp.substring(9,tp.length());
         }
         switch(tp) {
-            case "number":
-                return Type.INT;
             case "string":
                 return Type.OBJECT;
             case "real":
                 return Type.DOUBLE;
+            default:
+                return Type.INT;
         }
-        return Type.INT;
     }
     
     private void processList() {
@@ -125,6 +124,9 @@ public class BytecodeWriter extends simpleBaseListener {
                     ils.peek().append(new PUSH(_cp, Integer.parseInt(preList.get(i))));
                 }        
             } else if (preList.get(i).contains("LOAD")) {
+                if (lastExprType.toString().equals("double")) {
+                    ils.peek().append(InstructionConstants.D2I);
+                }
                 processLoad(preList.get(i));
             } else {
                 if (lastExprType.toString().equals("double")) {
@@ -275,7 +277,7 @@ public class BytecodeWriter extends simpleBaseListener {
     public void enterVariable(simpleParser.VariableContext ctx) {
         if (!leftSideOfAssign) {
             String varName = ctx.identifier(0).getText();
-            String varType = scp.getTypeOf(varName); 
+            String varType = scp.getTypeOf(varName);
             if (varType.contains("real")) {
                 lastExprType = Type.DOUBLE;
             }
@@ -293,6 +295,7 @@ public class BytecodeWriter extends simpleBaseListener {
             if (varType.contains("array")) {
                 lastArrayName = varName;
             }
+            
             
             preList.add(ctx.identifier(0).getText());
         }
@@ -405,11 +408,7 @@ public class BytecodeWriter extends simpleBaseListener {
         String constName = ctx.identifier().getText();
         Type tp = getTypeFromLiteral(rawConst);
         constLiterals.put(constName, rawConst);
-        
-        System.out.println(rawConst);
-        System.out.println(constName);
-        System.out.println(tp);
-        
+            
         field = new FieldGen(ACC_PUBLIC | ACC_STATIC | ACC_FINAL, tp, constName, _cp);
         
         switch(tp.toString()) {

@@ -4,6 +4,7 @@ head: {
         y: real;
         z: string;
         collection arr of 5:number;
+        collection arrD of 3:real;
     }
     const: {
         g = 20;
@@ -12,7 +13,6 @@ head: {
     }
 }
 body: {
-    x := 1;
     y := 1.5*4;
     print y;
     z := 'Hello';
@@ -22,5 +22,9 @@ body: {
     print h;
     print 3+4*g;
     arr[0] := 5;
-    print arr[0];
+    print 2*arr[0]+5;
+    x := 3+arr[0]*2;
+    print x;
+    arrD[1] := 2.5;
+    print arrD[1];
 }
