@@ -1,3 +1,5 @@
+import java.util.*;
+
 
 public class BCELTest {
     
@@ -10,7 +12,12 @@ public class BCELTest {
     
     public static void main(String[] args) {
         double x = greet(2,3.4);
-        int g;
+        HashMap<String, Double> map = new HashMap<String, Double>();
+        HashMap<String, String> mapS = new HashMap<String,String>();
+        mapS.put("Test","Bleh");
+        map.put("Hello",2.1*4+1-x);
+        map.get("Hello");
+        int g = 22;
         int z = 4;
         int v = 8;
         int t = 10;

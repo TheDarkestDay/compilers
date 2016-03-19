@@ -93,13 +93,17 @@ args
     ;
 
 variable
-    : identifier (arrayIndex | DOT identifier )?
+    : identifier (arrayIndex | RCURL (dictIndex | string) LCURL)?
     ;
     
 arrayIndex
     : RBRACK simpleExpression LBRACK
     ;
     
+dictIndex
+    : variable
+    ;
+        
 code
     : BODY COL RCURL statementSequence (returnStatement)? LCURL
     ;
@@ -391,6 +395,10 @@ STAR
     
 SLASH
     : '/'
+    ;
+    
+AT
+    : '@'
     ;
     
 IDENT

@@ -59,7 +59,7 @@ public class ScopeListener extends simpleBaseListener {
     public void enterDictDefinition(simpleParser.DictDefinitionContext ctx) {
         String id = ctx.identifier().getText();
         String typeFirst = ctx.type().getText();
-        activeScope.setTypeOf(id,typeFirst);
+        activeScope.setTypeOf(id,"dict of "+typeFirst);
     }
     
     @Override 

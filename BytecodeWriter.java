@@ -32,6 +32,7 @@ public class BytecodeWriter extends simpleBaseListener {
     private String lastArrayName;
     
     boolean leftSideOfAssign;
+    boolean inDictIndex;
     Type lastExprType;
     
     
@@ -102,7 +103,7 @@ public class BytecodeWriter extends simpleBaseListener {
                 if (scp.getTypeOf(varName).equals("constant")) {
                     ils.peek().append(_factory.createFieldAccess("Program", varName, getTypeFromLiteral(constLiterals.get(varName)), Constants.GETSTATIC));
                     varType = getTypeFromLiteral(constLiterals.get(varName));
-                } else if (scp.getTypeOf(varName).contains("array")) {
+                } else if (scp.getTypeOf(varName).contains("array") || scp.getTypeOf(varName).contains("dict")) {
                     int arrIndex = variables.peek().get(varName);
                     varType = toBCELType(scp.getTypeOf(varName));
                     ils.peek().append(_factory.createLoad(Type.OBJECT, arrIndex));
@@ -183,6 +184,7 @@ public class BytecodeWriter extends simpleBaseListener {
         loopStartIndexes = new Stack<Integer>();
         listStartIndexes = new Stack<Integer>();
         ifToTargetNear = null;
+        inDictIndex = false;
         branchIndexes = new ArrayList<Integer>();
         isInside.push(true);
         varCounters.push(0);
@@ -228,6 +230,8 @@ public class BytecodeWriter extends simpleBaseListener {
         String name = ctx.variable().getText();
         if (name.contains("[")) {
             name = name.substring(0,name.indexOf("["));
+        } else if (name.contains("{")) {
+            name = name.substring(0,name.indexOf("{"));
         }
         int varIndex = variables.peek().get(name);
         String varType = scp.getTypeOf(name);
@@ -251,6 +255,20 @@ public class BytecodeWriter extends simpleBaseListener {
             case "array of string":
                 ils.peek().append(InstructionConstants.AASTORE);
                 break;
+            case "dict of number":
+                ils.peek().append(_factory.createInvoke("java.lang.Integer", "valueOf", new ObjectType("java.lang.Integer"), new Type[] { Type.INT }, Constants.INVOKESTATIC));
+                ils.peek().append(_factory.createInvoke("java.util.HashMap", "put", Type.OBJECT, new Type[] { Type.OBJECT, Type.OBJECT }, Constants.INVOKEVIRTUAL));
+                ils.peek().append(InstructionConstants.POP);
+                break;
+            case "dict of real":
+                ils.peek().append(_factory.createInvoke("java.lang.Double", "valueOf", new ObjectType("java.lang.Double"), new Type[] { Type.DOUBLE }, Constants.INVOKESTATIC));
+                ils.peek().append(_factory.createInvoke("java.util.HashMap", "put", Type.OBJECT, new Type[] { Type.OBJECT, Type.OBJECT }, Constants.INVOKEVIRTUAL));
+                ils.peek().append(InstructionConstants.POP);
+                break;
+            case "dict of string":
+                ils.peek().append(_factory.createInvoke("java.util.HashMap", "put", Type.OBJECT, new Type[] { Type.OBJECT, Type.OBJECT }, Constants.INVOKEVIRTUAL));
+                ils.peek().append(InstructionConstants.POP);
+                break;
         }
     }
     
@@ -260,10 +278,24 @@ public class BytecodeWriter extends simpleBaseListener {
         
         String leftVarName = ctx.variable().getText();
         if (leftVarName.contains("[")) {
-            leftVarName = leftVarName.substring(0,leftVarName.indexOf("["));
-            
+            leftVarName = leftVarName.substring(0,leftVarName.indexOf("[")); 
+            ils.peek().append(_factory.createLoad(Type.OBJECT, variables.peek().get(leftVarName)));
+        } else if (leftVarName.contains("{")) {
+            leftVarName = leftVarName.substring(0,leftVarName.indexOf("{"));  
             ils.peek().append(_factory.createLoad(Type.OBJECT, variables.peek().get(leftVarName)));
         }
+    }
+    
+    
+    @Override
+    public void exitDictIndex(simpleParser.DictIndexContext ctx) {
+        String leftVarName = ctx.variable().getText();
+        if (leftVarName.contains("[")) {
+            leftVarName = leftVarName.substring(0,leftVarName.indexOf("[")); 
+        } else if (leftVarName.contains("{")) {
+            leftVarName = leftVarName.substring(0,leftVarName.indexOf("{"));
+        }
+        ils.peek().append(_factory.createLoad(Type.OBJECT, variables.peek().get(leftVarName)));
     }
     
     @Override
@@ -313,6 +345,19 @@ public class BytecodeWriter extends simpleBaseListener {
                 preList.add("<AALOAD>");
             }
         }
+    }
+    
+    @Override
+    public void enterDictDefinition(simpleParser.DictDefinitionContext ctx) {
+        int varIndex = varCounters.pop();
+        ils.peek().append(_factory.createNew("java.util.HashMap"));
+        ils.peek().append(InstructionConstants.DUP);
+        ils.peek().append(_factory.createInvoke("java.util.HashMap", "<init>", Type.VOID, Type.NO_ARGS, Constants.INVOKESPECIAL));
+        
+        varIndex++;
+        ils.peek().append(_factory.createStore(Type.OBJECT, varIndex));
+        varCounters.push(varIndex);
+        variables.peek().put(ctx.identifier().getText(), varIndex);
     }
     
     @Override

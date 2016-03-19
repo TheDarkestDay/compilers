@@ -5,6 +5,7 @@ head: {
         z: string;
         collection arr of 5:number;
         collection arrD of 3:real;
+        collection arrS of 4:string;
     }
     const: {
         g = 20;
@@ -27,4 +28,7 @@ body: {
     print x;
     arrD[1] := 2.5;
     print arrD[1];
+    arrS[1] := 'Name';
+    print arrS[1];
+    print 3+arrD[1]*4;
 }

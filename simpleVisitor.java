@@ -136,6 +136,12 @@ public interface simpleVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArrayIndex(simpleParser.ArrayIndexContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link simpleParser#dictIndex}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDictIndex(simpleParser.DictIndexContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link simpleParser#code}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
