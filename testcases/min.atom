@@ -3,9 +3,11 @@ head: {
         x: number;
         y: real;
         z: string;
+        key: string;
         collection arr of 5:number;
         collection arrD of 3:real;
         collection arrS of 4:string;
+        dictionary book of number;
     }
     const: {
         g = 20;
@@ -31,4 +33,7 @@ body: {
     arrS[1] := 'Name';
     print arrS[1];
     print 3+arrD[1]*4;
+    key := 'Pushkin';
+    book{key} := 25+3;
+    print book{key}*4;
 }

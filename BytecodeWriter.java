@@ -32,7 +32,7 @@ public class BytecodeWriter extends simpleBaseListener {
     private String lastArrayName;
     
     boolean leftSideOfAssign;
-    boolean inDictIndex;
+    String lastDictName;
     Type lastExprType;
     
     
@@ -107,6 +107,7 @@ public class BytecodeWriter extends simpleBaseListener {
                     int arrIndex = variables.peek().get(varName);
                     varType = toBCELType(scp.getTypeOf(varName));
                     ils.peek().append(_factory.createLoad(Type.OBJECT, arrIndex));
+                    if (scp.getTypeOf(varName).contains("dict")) lastDictName = varName;
                 } else {
                     int varIndex = variables.peek().get(varName);
                     varType = toBCELType(scp.getTypeOf(varName));
@@ -129,7 +130,28 @@ public class BytecodeWriter extends simpleBaseListener {
                     ils.peek().append(InstructionConstants.D2I);
                 }
                 processLoad(preList.get(i));
-            } else {
+            } else if (preList.get(i).contains("@")) {
+                    String varName = preList.get(i);
+                    varName = varName.substring(1,varName.length());
+                    int varIndex = variables.peek().get(varName);
+                    ils.peek().append(_factory.createLoad(Type.OBJECT, varIndex));
+                    ils.peek().append(_factory.createInvoke("java.util.HashMap", "get", Type.OBJECT, new Type[] { Type.OBJECT }, Constants.INVOKEVIRTUAL));
+                    Type dictType = toBCELType(scp.getTypeOf(lastDictName));
+                    
+                    if (dictType == Type.INT) {
+                        ils.peek().append(_factory.createCheckCast(new ObjectType("java.lang.Integer")));
+                        ils.peek().append(_factory.createInvoke("java.lang.Integer", "intValue", Type.INT, Type.NO_ARGS, Constants.INVOKEVIRTUAL));
+                    }
+                    if (dictType == Type.DOUBLE) {
+                        ils.peek().append(_factory.createCheckCast(new ObjectType("java.lang.Double")));
+                        ils.peek().append(_factory.createInvoke("java.lang.Double", "doubleValue", Type.DOUBLE, Type.NO_ARGS, Constants.INVOKEVIRTUAL));
+                    }
+                    
+                    if (lastExprType.toString().equals("double") && dictType == Type.INT) {
+                        ils.peek().append(InstructionConstants.I2D);
+                    }
+                } 
+                else {
                 if (lastExprType.toString().equals("double")) {
                     processDblOp(preList.get(i));
                 } else {
@@ -184,7 +206,7 @@ public class BytecodeWriter extends simpleBaseListener {
         loopStartIndexes = new Stack<Integer>();
         listStartIndexes = new Stack<Integer>();
         ifToTargetNear = null;
-        inDictIndex = false;
+        lastDictName = "";
         branchIndexes = new ArrayList<Integer>();
         isInside.push(true);
         varCounters.push(0);
@@ -289,13 +311,12 @@ public class BytecodeWriter extends simpleBaseListener {
     
     @Override
     public void exitDictIndex(simpleParser.DictIndexContext ctx) {
-        String leftVarName = ctx.variable().getText();
-        if (leftVarName.contains("[")) {
-            leftVarName = leftVarName.substring(0,leftVarName.indexOf("[")); 
-        } else if (leftVarName.contains("{")) {
-            leftVarName = leftVarName.substring(0,leftVarName.indexOf("{"));
+        String leftVarName = ctx.identifier().getText();
+        if (leftSideOfAssign) {
+            ils.peek().append(_factory.createLoad(Type.OBJECT, variables.peek().get(leftVarName)));
+        } else {
+            preList.add("@"+leftVarName);
         }
-        ils.peek().append(_factory.createLoad(Type.OBJECT, variables.peek().get(leftVarName)));
     }
     
     @Override
@@ -308,7 +329,7 @@ public class BytecodeWriter extends simpleBaseListener {
     @Override
     public void enterVariable(simpleParser.VariableContext ctx) {
         if (!leftSideOfAssign) {
-            String varName = ctx.identifier(0).getText();
+            String varName = ctx.identifier().getText();
             String varType = scp.getTypeOf(varName);
             if (varType.contains("real")) {
                 lastExprType = Type.DOUBLE;
@@ -329,7 +350,7 @@ public class BytecodeWriter extends simpleBaseListener {
             }
             
             
-            preList.add(ctx.identifier(0).getText());
+            preList.add(ctx.identifier().getText());
         }
     }
     

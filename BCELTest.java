@@ -16,7 +16,8 @@ public class BCELTest {
         HashMap<String, String> mapS = new HashMap<String,String>();
         mapS.put("Test","Bleh");
         map.put("Hello",2.1*4+1-x);
-        map.get("Hello");
+        System.out.println(map.get("Hello")*5);
+        System.out.println(map.get("Hello"));
         int g = 22;
         int z = 4;
         int v = 8;

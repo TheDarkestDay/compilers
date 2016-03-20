@@ -77,7 +77,7 @@ public class ScopeListener extends simpleBaseListener {
     
     @Override
     public void enterVariable(simpleParser.VariableContext ctx) {
-        String id = ctx.identifier(0).getText();
+        String id = ctx.identifier().getText();
         Integer line = ctx.getStart().getLine();
         if (!activeScope.contains(id)) {
             System.out.println("ERR( Line "+line+" ): "+id+" does not declared in this scope");

@@ -93,7 +93,7 @@ args
     ;
 
 variable
-    : identifier (arrayIndex | RCURL (dictIndex | string) LCURL)?
+    : identifier (arrayIndex | RCURL dictIndex LCURL)?
     ;
     
 arrayIndex
@@ -101,7 +101,7 @@ arrayIndex
     ;
     
 dictIndex
-    : variable
+    : identifier
     ;
         
 code
