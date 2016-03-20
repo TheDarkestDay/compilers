@@ -10,11 +10,27 @@ head: {
 }
 body: {
     x := 0;
+    tmp := 0;
     arr[0] := 2;
     arr[1] := 1;
     arr[2] := 3;
     arr[3] := 5;
     arr[4] := 4;
-    arr[x+2] := 10;
-    print arr[x+2];
+    while x < 4 {
+        x := x + 1;
+        if arr[x-1] > arr[x] {
+            tmp := arr[x];
+            arr[x] := arr[x-1];
+            arr[x-1] := tmp;
+            x := 0;
+            print 'Swap';
+        };
+        print 'Endloop';
+    };
+    x := 0;
+    while x < 5 {
+        print arr[x];
+        x := x + 1;
+    };
+    print 'Done';
 }
