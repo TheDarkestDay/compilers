@@ -56,75 +56,136 @@ public class BCELTest {
       65: ldc2_w        #20                 // double 5.0d
       68: dmul
       69: invokevirtual #22                 // Method java/io/PrintStream.println:(D)V
-      72: bipush        22
-      74: istore        5
-      76: iconst_4
-      77: istore        6
-      79: bipush        8
-      81: istore        7
-      83: bipush        10
-      85: istore        8
-      87: bipush        10
-      89: newarray       int
-      91: astore        9
-      93: bipush        25
-      95: newarray       int
-      97: astore        10
-      99: bipush        21
-     101: newarray       double
-     103: astore        11
-     105: bipush        12
-     107: anewarray     #23                 // class java/lang/String
-     110: astore        12
-     112: aload         9
-     114: iconst_1
-     115: bipush        15
-     117: iastore
-     118: ldc2_w        #24                 // double 1.5d
-     121: aload         9
-     123: iconst_1
-     124: iaload
-     125: i2d
-     126: dmul
-     127: dstore        13
-     129: aload         11
-     131: iconst_1
-     132: ldc2_w        #26                 // double 2.1d
-     135: dastore
-     136: aload         12
-     138: iconst_1
-     139: ldc           #28                 // String Blah
-     141: aastore
-     142: ldc           #29                 // String Haha
-     144: astore        15
-     146: getstatic     #16                 // Field java/lang/System.out:Ljava/io/PrintStream;
-     149: ldc2_w        #30                 // double 6.0d
-     152: dload_1
-     153: ldc2_w        #32                 // double 33.4d
-     156: dmul
-     157: dadd
-     158: ldc2_w        #35                 // double 12.0d
-     161: dadd
-     162: invokevirtual #22                 // Method java/io/PrintStream.println:(D)V
-     165: getstatic     #16                 // Field java/lang/System.out:Ljava/io/PrintStream;
-     168: ldc           #37                 // String Hello, world!
-     170: invokevirtual #38                 // Method java/io/PrintStream.println:(Ljava/lang/String;)V
-     173: iload         6
-     175: bipush        20
-     177: if_icmpgt     187
-     180: iload         6
-     182: bipush        100
-     184: if_icmpge     196
-     187: iload         6
-     189: iconst_1
-     190: iadd
-     191: istore        6
-     193: goto          173
-     196: getstatic     #16                 // Field java/lang/System.out:Ljava/io/PrintStream;
-     199: ldc           #37                 // String Hello, world!
-     201: invokevirtual #38                 // Method java/io/PrintStream.println:(Ljava/lang/String;)V
-     204: getstatic     #16                 // Field java/lang/System.out:Ljava/io/PrintStream;
-     207: bipush        12
-     209: invokevirtual #39                 // Method java/io/PrintStream.println:(I)V
-     212: return
+      72: getstatic     #16                 // Field java/lang/System.out:Ljava/io/PrintStream;
+      75: aload_3
+      76: ldc           #12                 // String Hello
+      78: invokevirtual #17                 // Method java/util/HashMap.get:(Ljava/lang/Object;)Ljava/lang/Object;
+      81: invokevirtual #23                 // Method java/io/PrintStream.println:(Ljava/lang/Object;)V
+      84: bipush        22
+      86: istore        5
+      88: iconst_4
+      89: istore        6
+      91: bipush        8
+      93: istore        7
+      95: bipush        10
+      97: istore        8
+      99: bipush        10
+     101: newarray       int
+     103: astore        9
+     105: bipush        25
+     107: newarray       int
+     109: astore        10
+     111: bipush        21
+     113: newarray       double
+     115: astore        11
+     117: bipush        12
+     119: anewarray     #24                 // class java/lang/String
+     122: astore        12
+     124: aload         9
+     126: iconst_1
+     127: bipush        15
+     129: iastore
+     130: ldc2_w        #25                 // double 1.5d
+     133: aload         9
+     135: iconst_1
+     136: iaload
+     137: i2d
+     138: dmul
+     139: dstore        13
+     141: aload         11
+     143: iconst_1
+     144: ldc2_w        #27                 // double 2.1d
+     147: dastore
+     148: aload         12
+     150: iconst_1
+     151: ldc           #29                 // String Blah
+     153: aastore
+     154: ldc           #30                 // String Haha
+     156: astore        15
+     158: getstatic     #16                 // Field java/lang/System.out:Ljava/io/PrintStream;
+     161: ldc2_w        #31                 // double 6.0d
+     164: dload_1
+     165: ldc2_w        #33                 // double 33.4d
+     168: dmul
+     169: dadd
+     170: ldc2_w        #36                 // double 12.0d
+     173: dadd
+     174: invokevirtual #22                 // Method java/io/PrintStream.println:(D)V
+     177: getstatic     #16                 // Field java/lang/System.out:Ljava/io/PrintStream;
+     180: ldc           #38                 // String Hello, world!
+     182: invokevirtual #39                 // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+     185: iload         6
+     187: bipush        20
+     189: if_icmpgt     199
+     192: iload         6
+     194: bipush        100
+     196: if_icmpge     208
+     199: iload         6
+     201: iconst_1
+     202: iadd
+     203: istore        6
+     205: goto          185
+     208: getstatic     #16                 // Field java/lang/System.out:Ljava/io/PrintStream;
+     211: ldc           #38                 // String Hello, world!
+     213: invokevirtual #39                 // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+     216: getstatic     #16                 // Field java/lang/System.out:Ljava/io/PrintStream;
+     219: bipush        12
+     221: invokevirtual #40                 // Method java/io/PrintStream.println:(I)V
+     224: aload         9
+     226: iconst_0
+     227: iconst_2
+     228: iastore
+     229: aload         9
+     231: iconst_1
+     232: iconst_3
+     233: iastore
+     234: aload         9
+     236: iconst_2
+     237: iconst_1
+     238: iastore
+     239: aload         9
+     241: iconst_3
+     242: iconst_5
+     243: iastore
+     244: aload         9
+     246: iconst_4
+     247: iconst_4
+     248: iastore
+     249: iconst_m1
+     250: istore        16
+     252: iload         16
+     254: iconst_3
+     255: if_icmpge     310
+     258: iinc          16, 1
+     261: aload         9
+     263: iload         16
+     265: iaload
+     266: aload         9
+     268: iload         16
+     270: iconst_1
+     271: iadd
+     272: iaload
+     273: if_icmple     252
+     276: aload         9
+     278: iload         16
+     280: iconst_1
+     281: iadd
+     282: iaload
+     283: istore        17
+     285: aload         9
+     287: iload         16
+     289: iconst_1
+     290: iadd
+     291: aload         9
+     293: iload         16
+     295: iaload
+     296: iastore
+     297: aload         9
+     299: iload         16
+     301: iload         17
+     303: iastore
+     304: iconst_m1
+     305: istore        16
+     307: goto          252
+     310: return
 }

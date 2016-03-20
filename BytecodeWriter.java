@@ -32,6 +32,7 @@ public class BytecodeWriter extends simpleBaseListener {
     private String lastArrayName;
     
     boolean leftSideOfAssign;
+    boolean inArrIndex;
     String lastDictName;
     Type lastExprType;
     
@@ -71,6 +72,7 @@ public class BytecodeWriter extends simpleBaseListener {
     }
     
     private void processLoad(String loadIns) {
+        System.out.println(loadIns);
         if (loadIns.equals("<AALOAD>")) {
             ils.peek().append(InstructionConstants.AALOAD);
         } else if (loadIns.equals("<IALOAD>")) {
@@ -190,6 +192,7 @@ public class BytecodeWriter extends simpleBaseListener {
         
         scp = scope;
         leftSideOfAssign = false;
+        inArrIndex = false;
         lastExprType = Type.INT;
         
         ils = new Stack<InstructionList>();
@@ -321,14 +324,14 @@ public class BytecodeWriter extends simpleBaseListener {
     
     @Override
     public void exitVariable(simpleParser.VariableContext ctx) {
-        if (leftSideOfAssign) {
+        if (leftSideOfAssign && !inArrIndex) {
             leftSideOfAssign = false;
         }
     }
     
     @Override
     public void enterVariable(simpleParser.VariableContext ctx) {
-        if (!leftSideOfAssign) {
+        if (!leftSideOfAssign || inArrIndex) {
             String varName = ctx.identifier().getText();
             String varType = scp.getTypeOf(varName);
             if (varType.contains("real")) {
@@ -355,7 +358,15 @@ public class BytecodeWriter extends simpleBaseListener {
     }
     
     @Override
+    public void enterArrayIndex(simpleParser.ArrayIndexContext ctx) {
+        if (leftSideOfAssign) {
+            inArrIndex = true;
+        }
+    }
+        
+    @Override
     public void exitArrayIndex(simpleParser.ArrayIndexContext ctx) {
+        inArrIndex = false;
         if (!leftSideOfAssign) {
             String lastArrType = scp.getTypeOf(lastArrayName);
             if (lastArrType.contains("number")) {
@@ -386,9 +397,9 @@ public class BytecodeWriter extends simpleBaseListener {
         InstructionList il = ils.peek();
         MethodGen method = methods.peek();
         
-       /* for (int i=0;i<ils.peek().getLength();i++) {
+        for (int i=0;i<ils.peek().getLength();i++) {
             System.out.println(ils.peek().getInstructionHandles()[i]);
-        } */
+        } 
         
         il.append(_factory.createReturn(Type.VOID));
         method.setMaxStack();
@@ -500,6 +511,10 @@ public class BytecodeWriter extends simpleBaseListener {
         listStartIndexes.pop();
         
         if (!lastExprType.toString().equals("string") && listStartIndexes.size() == 0) {
+            for (int i=0;i<preList.size();i++) {
+                System.out.println(preList.get(i));
+            }
+            System.out.println("==========================================");
             processList();
             preList.clear();
         }
@@ -571,9 +586,9 @@ public class BytecodeWriter extends simpleBaseListener {
     public void exitStatement(simpleParser.StatementContext ctx) {
         if (!isInside.peek()) {
             if (ils.peek().getInstructionHandles()[subcodeEndIndex+1].toString().contains("goto")) {
-                ifsToTargetOutside.peek().setTarget(ils.peek().getInstructionHandles()[subcodeEndIndex+2]);
+                ifsToTargetOutside.pop().setTarget(ils.peek().getInstructionHandles()[subcodeEndIndex+2]);
             } else {
-                ifsToTargetOutside.peek().setTarget(ils.peek().getInstructionHandles()[subcodeEndIndex+1]);
+                ifsToTargetOutside.pop().setTarget(ils.peek().getInstructionHandles()[subcodeEndIndex+1]);
             }
             isInside.pop();
         }
@@ -588,6 +603,7 @@ public class BytecodeWriter extends simpleBaseListener {
     @Override
     public void exitExpression(simpleParser.ExpressionContext ctx) {
         String branchIns = ils.peek().getEnd().getInstruction().getName().toUpperCase();
+        ifsToTargetOutside.pop();
         
         switch(branchIns) {
             case "IF_ICMPLE":

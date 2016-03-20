@@ -3,37 +3,18 @@ head: {
         x: number;
         y: real;
         z: string;
+        tmp: number;
         key: string;
         collection arr of 5:number;
-        collection arrD of 3:real;
-        collection arrS of 4:string;
-        dictionary book of number;
-    }
-    const: {
-        g = 20;
-        h = 'Blah';
-        z = 3.15;
     }
 }
 body: {
-    y := 1.5*4;
-    print y;
-    z := 'Hello';
-    print z;
-    print 'Hello as literal';
-    print 3+4.5*g;
-    print h;
-    print 3+4*g;
-    arr[0] := 5;
-    print 2*arr[0]+5;
-    x := 3+arr[0]*2;
-    print x;
-    arrD[1] := 2.5;
-    print arrD[1];
-    arrS[1] := 'Name';
-    print arrS[1];
-    print 3+arrD[1]*4;
-    key := 'Pushkin';
-    book{key} := 25+3;
-    print book{key}*4;
+    x := 0;
+    arr[0] := 2;
+    arr[1] := 1;
+    arr[2] := 3;
+    arr[3] := 5;
+    arr[4] := 4;
+    arr[x+2] := 10;
+    print arr[x+2];
 }

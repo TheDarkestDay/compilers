@@ -38,5 +38,24 @@ public class BCELTest {
         }
         System.out.println("Hello, world!");
         System.out.println(CONST);
+        
+        
+        
+        arr[0] = 2;
+        arr[1] = 3;
+        arr[2] = 1;
+        arr[3] = 5;
+        arr[4] = 4;
+        int i = -1;
+        int tmp;
+        while (i<3) {
+            i++;
+            if (arr[i] > arr[i+1]) {
+                tmp = arr[i+1];
+                arr[i+1] = arr[i];
+                arr[i] = tmp;
+                i = -1;
+            }
+        }
     }
 }
