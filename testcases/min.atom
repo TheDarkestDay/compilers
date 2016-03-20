@@ -6,6 +6,7 @@ head: {
         tmp: number;
         key: string;
         collection arr of 5:number;
+        dictionary book of number;
     }
 }
 body: {
@@ -23,7 +24,6 @@ body: {
             arr[x] := arr[x-1];
             arr[x-1] := tmp;
             x := 0;
-            print 'Swap';
         };
         print 'Endloop';
     };
@@ -33,4 +33,7 @@ body: {
         x := x + 1;
     };
     print 'Done';
+    key := 'Harry Potter'
+    book{key} := 7;
+    print 3+book{key}*3;
 }

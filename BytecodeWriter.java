@@ -600,6 +600,24 @@ public class BytecodeWriter extends simpleBaseListener {
         }
     }
     
+ /*   @Override
+    public void exitCompoundStatement(simpleParser.CompoundStatementContext ctx) {
+        if (!isInside.peek()) {
+            if (ils.peek().getInstructionHandles()[subcodeEndIndex+1].toString().contains("goto")) {
+                ifsToTargetOutside.pop().setTarget(ils.peek().getInstructionHandles()[subcodeEndIndex+2]);
+            } else {
+                ifsToTargetOutside.pop().setTarget(ils.peek().getInstructionHandles()[subcodeEndIndex+1]);
+            }
+            isInside.pop();
+        }
+        
+        while(!ifsToTargetInside.empty()) {
+            int lastBranchIndex = branchIndexes.get(branchIndexes.size()-1);
+            ifsToTargetInside.peek().setTarget(ils.peek().getInstructionHandles()[lastBranchIndex+1]);
+            ifsToTargetInside.pop();
+        }
+    } */
+    
     @Override
     public void exitExpression(simpleParser.ExpressionContext ctx) {
         String branchIns = ils.peek().getEnd().getInstruction().getName().toUpperCase();
