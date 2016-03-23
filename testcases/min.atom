@@ -35,7 +35,6 @@ body: {
     print 'Done';
     key := 'Harry Potter'
     book{key} := 7;
-    print 3+book{key}*3;
-    get x;
-    print x;
+    get arr[2];
+    print arr[2];
 }

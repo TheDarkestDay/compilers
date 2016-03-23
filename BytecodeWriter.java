@@ -736,12 +736,13 @@ public class BytecodeWriter extends simpleBaseListener {
         }
         
         type = scp.getTypeOf(varName);
+        System.out.println(type);
         if (type.contains("number")) {
             ils.peek().append(_factory.createInvoke("java.util.Scanner", "nextInt", Type.INT, Type.NO_ARGS, Constants.INVOKEVIRTUAL));
             if (!type.contains("array")) {
                 ils.peek().append(_factory.createStore(Type.INT, variables.peek().get(varName)));
             } else {
-                ils.peek().append(InstructionConstants.DASTORE);
+                ils.peek().append(InstructionConstants.IASTORE);
             }
         } else if (type.contains("string")) {
             ils.peek().append(_factory.createInvoke("java.util.Scanner", "next", Type.STRING, Type.NO_ARGS, Constants.INVOKEVIRTUAL));
