@@ -37,6 +37,23 @@ public class BytecodeWriter extends simpleBaseListener {
     Type lastExprType;
     
     
+    private void initializeClinit() {
+        InstructionList il = ils.peek();
+        MethodGen method = new MethodGen(ACC_STATIC, Type.VOID, Type.NO_ARGS, new String[] {  }, "<clinit>", "Program", il, _cp);
+
+        InstructionHandle ih_0 = il.append(_factory.createNew("java.util.Scanner"));
+        il.append(InstructionConstants.DUP);
+        il.append(_factory.createFieldAccess("java.lang.System", "in", new ObjectType("java.io.InputStream"), Constants.GETSTATIC));
+        il.append(_factory.createInvoke("java.util.Scanner", "<init>", Type.VOID, new Type[] { new ObjectType("java.io.InputStream") },                         Constants.INVOKESPECIAL));
+        il.append(_factory.createFieldAccess("Program", "scanner", new ObjectType("java.util.Scanner"), Constants.PUTSTATIC));
+        il.append(_factory.createReturn(Type.VOID));
+        method.setMaxStack();
+        method.setMaxLocals();
+        _cg.addMethod(method.getMethod());
+        methods.push(method);
+        il.dispose();
+    }
+    
     private void processIntOp(String op) {
         switch(op) {
             case "+":
@@ -226,6 +243,10 @@ public class BytecodeWriter extends simpleBaseListener {
     public void enterProgram(simpleParser.ProgramContext ctx) { 
         InstructionList il = new InstructionList();
         MethodGen method = new MethodGen(ACC_PUBLIC | ACC_STATIC, Type.VOID, new Type[] { new ArrayType(Type.STRING, 1) }, new String[] { "arg0" }, "main", "Program", il, _cp);
+        FieldGen field;
+        
+        field = new FieldGen(ACC_PUBLIC | ACC_STATIC, new ObjectType("java.util.Scanner"), "scanner", _cp);
+        _cg.addField(field.getField());
         
         ils.push(il);
         methods.push(method);
@@ -406,6 +427,8 @@ public class BytecodeWriter extends simpleBaseListener {
         method.setMaxLocals();
         _cg.addMethod(method.getMethod());
         il.dispose();
+        
+        initializeClinit();
     } 
     
     @Override
@@ -698,6 +721,45 @@ public class BytecodeWriter extends simpleBaseListener {
         ils.peek().append(_factory.createStore(Type.OBJECT, varIndex));
         varCounters.push(varIndex);
         variables.peek().put(ctx.identifier().getText(), varIndex);
+    }
+    
+    @Override
+    public void exitInput(simpleParser.InputContext ctx) {
+        String var = ctx.variable().getText();
+        String varName,type;
+        ils.peek().append(_factory.createFieldAccess("Program", "scanner", new ObjectType("java.util.Scanner"), Constants.GETSTATIC));
+        
+        if (var.contains("[")) {
+            varName = var.substring(0,var.indexOf("["));
+        } else {
+            varName = var;
+        }
+        
+        type = scp.getTypeOf(varName);
+        if (type.contains("number")) {
+            ils.peek().append(_factory.createInvoke("java.util.Scanner", "nextInt", Type.INT, Type.NO_ARGS, Constants.INVOKEVIRTUAL));
+            if (!type.contains("array")) {
+                ils.peek().append(_factory.createStore(Type.INT, variables.peek().get(varName)));
+            } else {
+                ils.peek().append(InstructionConstants.DASTORE);
+            }
+        } else if (type.contains("string")) {
+            ils.peek().append(_factory.createInvoke("java.util.Scanner", "next", Type.STRING, Type.NO_ARGS, Constants.INVOKEVIRTUAL));
+            if (!type.contains("array")) {
+                ils.peek().append(_factory.createStore(Type.OBJECT, variables.peek().get(varName)));
+            } else {
+                ils.peek().append(InstructionConstants.AASTORE);
+            }
+        } else {
+            ils.peek().append(_factory.createInvoke("java.util.Scanner", "nextDouble", Type.DOUBLE, Type.NO_ARGS, Constants.INVOKEVIRTUAL));
+            if (!type.contains("array")) {
+                ils.peek().append(_factory.createStore(Type.DOUBLE, variables.peek().get(varName)));
+            } else {
+                ils.peek().append(InstructionConstants.DASTORE);
+            }
+        }
+        
+        preList.clear();
     }
     
 }

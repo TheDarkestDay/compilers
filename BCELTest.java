@@ -5,6 +5,8 @@ public class BCELTest {
     
     public static final int CONST = 12;
     
+    public static Scanner scanner = new Scanner(System.in);
+    
     public static double greet(int dbl,double br) {
         int flag = 1;
         return dbl*br+3;
@@ -40,22 +42,8 @@ public class BCELTest {
         System.out.println(CONST);
         
         
-        
-        arr[0] = 2;
-        arr[1] = 3;
-        arr[2] = 1;
-        arr[3] = 5;
-        arr[4] = 4;
-        int i = -1;
-        int tmp;
-        while (i<3) {
-            i++;
-            if (arr[i] > arr[i+1]) {
-                tmp = arr[i+1];
-                arr[i+1] = arr[i];
-                arr[i] = tmp;
-                i = -1;
-            }
-        }
+        g = scanner.nextInt();
+        word = scanner.next();
+        arrDbl[1] = scanner.nextDouble();
     }
 }

@@ -33,8 +33,13 @@ import javax.tools.JavaFileObject.Kind; */
 
 
 public class Driver {
+    
+    public static Scanner scanner = new Scanner(System.in);
+    
     public static void main(String args[]) throws Exception {
         String inputFile = args[0];
+        
+        scanner.nextInt();
                
         InputStream is = new FileInputStream(inputFile);
         ANTLRInputStream input = new ANTLRInputStream(is);

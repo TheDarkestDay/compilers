@@ -20,6 +20,7 @@ public class BCELTestCreator implements Constants {
     createMethod_0();
     createMethod_1();
     createMethod_2();
+    createMethod_3();
     _cg.getJavaClass().dump(out);
   }
 
@@ -28,6 +29,9 @@ public class BCELTestCreator implements Constants {
 
     field = new FieldGen(ACC_PUBLIC | ACC_STATIC | ACC_FINAL, Type.INT, "CONST", _cp);
     field.setInitValue(12)
+    _cg.addField(field.getField());
+
+    field = new FieldGen(ACC_PUBLIC | ACC_STATIC, new ObjectType("java.util.Scanner"), "scanner", _cp);
     _cg.addField(field.getField());
   }
 
@@ -179,82 +183,42 @@ public class BCELTestCreator implements Constants {
     InstructionHandle ih_216 = il.append(_factory.createFieldAccess("java.lang.System", "out", new ObjectType("java.io.PrintStream"), Constants.GETSTATIC));
     il.append(new PUSH(_cp, 12));
     il.append(_factory.createInvoke("java.io.PrintStream", "println", Type.VOID, new Type[] { Type.INT }, Constants.INVOKEVIRTUAL));
-    InstructionHandle ih_224 = il.append(_factory.createLoad(Type.OBJECT, 9));
-    il.append(new PUSH(_cp, 0));
-    il.append(new PUSH(_cp, 2));
-    il.append(InstructionConstants.IASTORE);
-    InstructionHandle ih_229 = il.append(_factory.createLoad(Type.OBJECT, 9));
+      
+      
+      
+      
+    InstructionHandle ih_224 = il.append(_factory.createFieldAccess("BCELTest", "scanner", new ObjectType("java.util.Scanner"), Constants.GETSTATIC));  
+    il.append(_factory.createInvoke("java.util.Scanner", "nextInt", Type.INT, Type.NO_ARGS, Constants.INVOKEVIRTUAL));
+    il.append(_factory.createStore(Type.INT, 5));
+    InstructionHandle ih_232 = il.append(_factory.createFieldAccess("BCELTest", "scanner", new ObjectType("java.util.Scanner"), Constants.GETSTATIC));
+    il.append(_factory.createInvoke("java.util.Scanner", "next", Type.STRING, Type.NO_ARGS, Constants.INVOKEVIRTUAL));
+    il.append(_factory.createStore(Type.OBJECT, 15));
+    InstructionHandle ih_240 = il.append(_factory.createLoad(Type.OBJECT, 11));
     il.append(new PUSH(_cp, 1));
-    il.append(new PUSH(_cp, 3));
-    il.append(InstructionConstants.IASTORE);
-    InstructionHandle ih_234 = il.append(_factory.createLoad(Type.OBJECT, 9));
-    il.append(new PUSH(_cp, 2));
-    il.append(new PUSH(_cp, 1));
-    il.append(InstructionConstants.IASTORE);
-    InstructionHandle ih_239 = il.append(_factory.createLoad(Type.OBJECT, 9));
-    il.append(new PUSH(_cp, 3));
-    il.append(new PUSH(_cp, 5));
-    il.append(InstructionConstants.IASTORE);
-    InstructionHandle ih_244 = il.append(_factory.createLoad(Type.OBJECT, 9));
-    il.append(new PUSH(_cp, 4));
-    il.append(new PUSH(_cp, 4));
-    il.append(InstructionConstants.IASTORE);
-    InstructionHandle ih_249 = il.append(new PUSH(_cp, -1));
-    il.append(_factory.createStore(Type.INT, 16));
-    InstructionHandle ih_252 = il.append(_factory.createLoad(Type.INT, 16));
-    il.append(new PUSH(_cp, 3));
-        BranchInstruction if_icmpge_255 = _factory.createBranchInstruction(Constants.IF_ICMPGE, null);
-    il.append(if_icmpge_255);
-    InstructionHandle ih_258 = il.append(new IINC(16, 1));
-    InstructionHandle ih_261 = il.append(_factory.createLoad(Type.OBJECT, 9));
-    il.append(_factory.createLoad(Type.INT, 16));
-    il.append(InstructionConstants.IALOAD);
-    il.append(_factory.createLoad(Type.OBJECT, 9));
-    il.append(_factory.createLoad(Type.INT, 16));
-    il.append(new PUSH(_cp, 1));
-    il.append(InstructionConstants.IADD);
-    il.append(InstructionConstants.IALOAD);
-        BranchInstruction if_icmpge_273 = _factory.createBranchInstruction(Constants.IF_ICMPGE, null);
-    il.append(if_icmpge_273);
-    InstructionHandle ih_276 = il.append(new PUSH(_cp, 0));
-    il.append(_factory.createStore(Type.INT, 16));
-    InstructionHandle ih_279 = il.append(_factory.createLoad(Type.OBJECT, 9));
-    il.append(_factory.createLoad(Type.INT, 16));
-    il.append(InstructionConstants.IALOAD);
-    il.append(_factory.createLoad(Type.OBJECT, 9));
-    il.append(_factory.createLoad(Type.INT, 16));
-    il.append(new PUSH(_cp, 1));
-    il.append(InstructionConstants.IADD);
-    il.append(InstructionConstants.IALOAD);
-        BranchInstruction if_icmple_291 = _factory.createBranchInstruction(Constants.IF_ICMPLE, ih_252);
-    il.append(if_icmple_291);
-    InstructionHandle ih_294 = il.append(_factory.createLoad(Type.OBJECT, 9));
-    il.append(_factory.createLoad(Type.INT, 16));
-    il.append(new PUSH(_cp, 1));
-    il.append(InstructionConstants.IADD);
-    il.append(InstructionConstants.IALOAD);
-    il.append(_factory.createStore(Type.INT, 17));
-    InstructionHandle ih_303 = il.append(_factory.createLoad(Type.OBJECT, 9));
-    il.append(_factory.createLoad(Type.INT, 16));
-    il.append(new PUSH(_cp, 1));
-    il.append(InstructionConstants.IADD);
-    il.append(_factory.createLoad(Type.OBJECT, 9));
-    il.append(_factory.createLoad(Type.INT, 16));
-    il.append(InstructionConstants.IALOAD);
-    il.append(InstructionConstants.IASTORE);
-    InstructionHandle ih_315 = il.append(_factory.createLoad(Type.OBJECT, 9));
-    il.append(_factory.createLoad(Type.INT, 16));
-    il.append(_factory.createLoad(Type.INT, 17));
-    il.append(InstructionConstants.IASTORE);
-    InstructionHandle ih_322 = il.append(new PUSH(_cp, -1));
-    il.append(_factory.createStore(Type.INT, 16));
-        BranchInstruction goto_325 = _factory.createBranchInstruction(Constants.GOTO, ih_252);
-    il.append(goto_325);
-    InstructionHandle ih_328 = il.append(_factory.createReturn(Type.VOID));
+    il.append(_factory.createFieldAccess("BCELTest", "scanner", new ObjectType("java.util.Scanner"), Constants.GETSTATIC));
+    il.append(_factory.createInvoke("java.util.Scanner", "nextDouble", Type.DOUBLE, Type.NO_ARGS, Constants.INVOKEVIRTUAL));
+    il.append(InstructionConstants.DASTORE);
+      
+      
+    InstructionHandle ih_250 = il.append(_factory.createReturn(Type.VOID));
     if_icmpgt_189.setTarget(ih_199);
     if_icmpge_196.setTarget(ih_208);
-    if_icmpge_255.setTarget(ih_328);
-    if_icmpge_273.setTarget(ih_279);
+    method.setMaxStack();
+    method.setMaxLocals();
+    _cg.addMethod(method.getMethod());
+    il.dispose();
+  }
+
+  private void createMethod_3() {
+    InstructionList il = new InstructionList();
+    MethodGen method = new MethodGen(ACC_STATIC, Type.VOID, Type.NO_ARGS, new String[] {  }, "<clinit>", "BCELTest", il, _cp);
+
+    InstructionHandle ih_0 = il.append(_factory.createNew("java.util.Scanner"));
+    il.append(InstructionConstants.DUP);
+    il.append(_factory.createFieldAccess("java.lang.System", "in", new ObjectType("java.io.InputStream"), Constants.GETSTATIC));
+    il.append(_factory.createInvoke("java.util.Scanner", "<init>", Type.VOID, new Type[] { new ObjectType("java.io.InputStream") }, Constants.INVOKESPECIAL));
+    il.append(_factory.createFieldAccess("BCELTest", "scanner", new ObjectType("java.util.Scanner"), Constants.PUTSTATIC));
+    il.append(_factory.createReturn(Type.VOID));
     method.setMaxStack();
     method.setMaxLocals();
     _cg.addMethod(method.getMethod());
