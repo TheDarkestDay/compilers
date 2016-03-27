@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import javax.tools.*;
 import java.io.PrintWriter;
 import java.io.File;
+import soot.Main;
 
 /*import org.objectweb.asm.Attribute;
 import java.io.IOException;
@@ -34,12 +35,10 @@ import javax.tools.JavaFileObject.Kind; */
 
 public class Driver {
     
-    public static Scanner scanner = new Scanner(System.in);
     
     public static void main(String args[]) throws Exception {
         String inputFile = args[0];
         
-        scanner.nextInt();
                
         InputStream is = new FileInputStream(inputFile);
         ANTLRInputStream input = new ANTLRInputStream(is);
@@ -78,5 +77,8 @@ public class Driver {
         walker.walk(trans,tree);
         
         trans.writeClass();
+        
+        String sootArgs[] = {"-cp", ".", "-pp", "Program"};  
+        soot.Main.main(sootArgs);
     }
 }
