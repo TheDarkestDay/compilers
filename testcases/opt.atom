@@ -1,0 +1,13 @@
+head: {
+    vars: {
+        x: number;
+        y: number;
+    }
+}
+body: {
+    x := 5;
+    if x < 1 {
+        print x+2;
+    }
+    print x;
+}
